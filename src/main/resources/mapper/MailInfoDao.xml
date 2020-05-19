@@ -8,6 +8,7 @@
     <result column="from" jdbcType="VARCHAR" property="from" />
     <result column="to" jdbcType="VARCHAR" property="to" />
     <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, subject, `from`, `to`, content
+    id, user_id, subject, `from`, `to`, content, `date`
   </sql>
   <select id="selectByExample" parameterType="com.lpq.mail.entity.MailInfoExample" resultMap="BaseResultMap">
     select
@@ -102,9 +103,11 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lpq.mail.entity.MailInfo" useGeneratedKeys="true">
     insert into mail_info (user_id, subject, `from`, 
-      `to`, content)
+      `to`, content, `date`
+      )
     values (#{userId,jdbcType=INTEGER}, #{subject,jdbcType=VARCHAR}, #{from,jdbcType=VARCHAR}, 
-      #{to,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR})
+      #{to,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lpq.mail.entity.MailInfo" useGeneratedKeys="true">
     insert into mail_info
@@ -124,6 +127,9 @@
       <if test="content != null">
         content,
       </if>
+      <if test="date != null">
+        `date`,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -140,6 +146,9 @@
       </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -170,6 +179,9 @@
       <if test="record.content != null">
         content = #{record.content,jdbcType=VARCHAR},
       </if>
+      <if test="record.date != null">
+        `date` = #{record.date,jdbcType=TIMESTAMP},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -182,7 +194,8 @@
       subject = #{record.subject,jdbcType=VARCHAR},
       `from` = #{record.from,jdbcType=VARCHAR},
       `to` = #{record.to,jdbcType=VARCHAR},
-      content = #{record.content,jdbcType=VARCHAR}
+      content = #{record.content,jdbcType=VARCHAR},
+      `date` = #{record.date,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -205,6 +218,9 @@
       <if test="content != null">
         content = #{content,jdbcType=VARCHAR},
       </if>
+      <if test="date != null">
+        `date` = #{date,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -214,7 +230,8 @@
       subject = #{subject,jdbcType=VARCHAR},
       `from` = #{from,jdbcType=VARCHAR},
       `to` = #{to,jdbcType=VARCHAR},
-      content = #{content,jdbcType=VARCHAR}
+      content = #{content,jdbcType=VARCHAR},
+      `date` = #{date,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

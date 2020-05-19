@@ -1,6 +1,7 @@
 package com.lpq.mail.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import lombok.Data;
 
 /**
@@ -38,6 +39,11 @@ public class MailInfo implements Serializable {
      * 邮件内容
      */
     private String content;
+
+    /**
+     * 邮件日期
+     */
+    private Date date;
 
     private static final long serialVersionUID = 1L;
 }
