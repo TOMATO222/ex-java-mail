@@ -1,17 +1,14 @@
-package serviceImpl;
-
-import com.lpq.mail.service.IdecodeService;
+package com.lpq.mail.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 /**
- * 创建人：肖易安
- * 创建时间：  2020/5/19
- * 注释：null
- **/
-public class DecodeServiceImpl implements IdecodeService {
-    @Override
+ * @author Wei yuyaung
+ * @date 2020.05.19 17:59
+ */
+public class MailDecodeUtil {
+
     public String codeTransform(String text, String charset, String charout) throws UnsupportedEncodingException {
         //文本转二进制
         String Str = new String( text.getBytes(charset));

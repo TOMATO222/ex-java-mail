@@ -1,6 +1,4 @@
-package serviceImpl;
-
-import com.lpq.mail.service.IanalysisService;
+package com.lpq.mail.utils;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -11,22 +9,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 创建人：肖易安
- * 创建时间：  2020/5/19
- * 注释：null
- **/
-public class AnalysisServiceImpl implements IanalysisService {
-    private String context ;
+ * @author Wei yuyaung
+ * @date 2020.05.19 17:54
+ */
+public class MailAnalyseUtil {
 
-    public AnalysisServiceImpl(String context) {
-        this.context = context;
-    }
-
-    public AnalysisServiceImpl() {
-    }
-
-    @Override
-    public String from() {
+    public String from(String context) {
         String pattern = "(From: ).*(<)(.*)(?=>)";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(context);
@@ -37,8 +25,7 @@ public class AnalysisServiceImpl implements IanalysisService {
         }
     }
 
-    @Override
-    public String to() {
+    public String to(String context) {
         String pattern = "(To: ).*(<)(.*)(?=>)";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(context);
@@ -49,8 +36,7 @@ public class AnalysisServiceImpl implements IanalysisService {
         }
     }
 
-    @Override
-    public Timestamp date() throws ParseException {
+    public Timestamp date(String context) throws ParseException {
         String pattern = "(Date: )(.*?)\\n";
         Pattern r = Pattern.compile(pattern) ;
         Matcher m = r.matcher(context) ;
@@ -75,8 +61,7 @@ public class AnalysisServiceImpl implements IanalysisService {
         return null ;
     }
 
-    @Override
-    public String subjectCharset() {
+    public String subjectCharset(String context) {
         String pattern = "(Subject: ).*(=\\?)(.*)(\\?)" ;
         Pattern r = Pattern.compile(pattern) ;
         Matcher m = r.matcher(context) ;
@@ -89,8 +74,7 @@ public class AnalysisServiceImpl implements IanalysisService {
         }
     }
 
-    @Override
-    public String subjectText() {
+    public String subjectText(String context) {
         String pattern = "(Subject: ).*(=\\?)(.*)(\\?)" ;
         Pattern r = Pattern.compile(pattern) ;
         Matcher m = r.matcher(context) ;
@@ -103,21 +87,19 @@ public class AnalysisServiceImpl implements IanalysisService {
         }
     }
 
-    @Override
-    public String bodyCharset() {
+    public String bodyCharset(String context) {
         String text = init(context) ;
         String pattern = "(?=Content-Type: text/plain).*(charset=)(.*)(Content-Transfer-Encoding: base64)" ;
         Pattern r = Pattern.compile(pattern) ;
         Matcher m = r.matcher(text) ;
         if (m.find( )) {
-           return m.group(2);
+            return m.group(2);
         } else {
             return null ;
         }
     }
 
-    @Override
-    public String bodyText() {
+    public String bodyText(String context) {
         String text = init(context) ;
         String pattern = "Content-Transfer-Encoding: base64(.*?)------" ;
         Pattern r = Pattern.compile(pattern) ;
