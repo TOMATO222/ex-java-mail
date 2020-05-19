@@ -68,7 +68,11 @@ public class MailAnalyseUtil {
         String[] subject = null ;
         if (m.find( )) {
             subject = m.group(3).split("\\?");
-            return subject[0] ;
+            String str =  subject[0] ;
+            if(str.contains("\"")){
+                str = str.replaceAll("\"" , "");
+            }
+            return str ;
         } else {
             return null;
         }
