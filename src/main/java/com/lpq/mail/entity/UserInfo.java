@@ -4,40 +4,35 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * mail_info
+ * user_info
  * @author 
  */
 @Data
 public class UserInfo implements Serializable {
     /**
-     * 邮件id
+     * 主键id，自动递增
      */
     private Integer id;
 
     /**
-     * 邮件所属的用户
+     * 用户登录账号
      */
-    private Integer userId;
+    private String username;
 
     /**
-     * 主题
+     * 用户密码
      */
-    private String subject;
+    private String password;
 
     /**
-     * 发送方
+     * 用户昵称
      */
-    private String from;
+    private String nickName;
 
     /**
-     * 接收方
+     * 账号状态
      */
-    private String to;
-
-    /**
-     * 邮件内容
-     */
-    private String content;
+    private Integer state;
 
     private static final long serialVersionUID = 1L;
 }

@@ -29,7 +29,7 @@ public class MailServiceImpl implements MailService {
     public boolean receiveMail(Integer userId) {
         //先删后存，防止数据库里面邮件重复
         MailInfoExample example = new MailInfoExample();
-        MailInfoExample.Criteria criteria = example.createCriteria().andUserIdEqualTo(userId);
+        example.createCriteria().andUserIdEqualTo(userId);
         mailInfoDao.deleteByExample(example);
 
 
