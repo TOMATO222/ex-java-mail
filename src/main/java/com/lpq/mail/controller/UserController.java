@@ -45,7 +45,7 @@ public class UserController {
      */ 
     @PassToken
     @PostMapping("login")
-    public BaseResult<LoginDTO> login(@RequestBody LoginVO loginVO){
+    public BaseResult<LoginDTO> login(LoginVO loginVO){
         try {
             String login = userService.login(loginVO);
             return BaseResult.success(new LoginDTO(login));

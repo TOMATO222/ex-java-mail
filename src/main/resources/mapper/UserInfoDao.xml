@@ -148,7 +148,7 @@
     left join user_role_info as b
     on a.id = b.user_id
     where b.user_type > 0
-    and a.username = #{username,jdbcType=VARCHER};
+    and a.username = #{username,jdbcType=VARCHAR};
   </select>
   <update id="updateByExampleSelective" parameterType="map">
     update user_info
