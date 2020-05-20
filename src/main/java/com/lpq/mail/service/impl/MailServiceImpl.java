@@ -12,6 +12,7 @@ import com.lpq.mail.service.MailService;
 import com.lpq.mail.utils.MailAnalyseUtil;
 import com.lpq.mail.utils.MailDecodeUtil;
 import com.lpq.mail.utils.POPUtil;
+import com.lpq.mail.utils.SMTPUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +36,14 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public boolean send() {
-        return false;
+    public boolean send(MailInfo mailInfo , MailAccountInfo mailAccountInfo)throws GlobalException {
+        SMTPUtil smtp = new SMTPUtil();
+        boolean success = smtp.SMTPserver(mailInfo,mailAccountInfo);
+        if(success){
+            return true ;
+        }else{
+            throw new GlobalException(CodeMessage.SEND_MAIL_ERROR);
+        }
     }
 
     @Override

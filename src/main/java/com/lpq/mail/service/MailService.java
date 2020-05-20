@@ -1,5 +1,7 @@
 package com.lpq.mail.service;
 
+import com.lpq.mail.entity.MailAccountInfo;
+import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.exception.GlobalException;
 
 /**
@@ -12,7 +14,7 @@ public interface MailService {
      * @author: Wei Yuyang
      * @time: 2020.05.19
      */
-    boolean send();
+    boolean send(MailInfo mailInfo , MailAccountInfo mailAccountInfo) throws GlobalException;
 
     /**
      * description: 读取邮件，存入数据库
