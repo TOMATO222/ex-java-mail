@@ -31,6 +31,9 @@ public class CodeMessage {
     public static final CodeMessage DATABSE_ERROR = new CodeMessage(1001,"数据库的数据有误");
     public static final CodeMessage ERROR_PASSWORD = new CodeMessage(1002,"密码错误");
     public static final CodeMessage ERROR_USERNAME = new CodeMessage(1003,"用户名不存在");
+    public static final CodeMessage USER_NOT_EXIST = new CodeMessage(1004,"用户不存在");
+    public static final CodeMessage USER_LOCKED = new CodeMessage(1005,"账户已被锁定");
+    public static final CodeMessage CHANGE_NICKNAME_FAIL = new CodeMessage(1006,"修改昵称失败");
 
 
     private int code;

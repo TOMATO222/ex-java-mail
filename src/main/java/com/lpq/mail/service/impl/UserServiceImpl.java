@@ -8,7 +8,9 @@ import com.lpq.mail.entity.UserInfoExample;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.UserService;
+import com.lpq.mail.vo.ChangePasswordVO;
 import com.lpq.mail.vo.LoginVO;
+import com.lpq.mail.vo.ModifyUserInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private UserInfoDao userInfoDao;
+
+    //用户锁定状态，state = 1
+    public static final int USER_LOCKED = 1;
 
     @Autowired
     public UserServiceImpl(UserInfoDao userInfoDao) {
@@ -47,19 +52,43 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
     @Override
-    public boolean changePassword() {
-        return false;
+    public boolean changePassword(Integer userId, ChangePasswordVO changePasswordVO) throws GlobalException {
+        UserInfo userInfo = userInfoDao.selectByPrimaryKey(userId);
+        if(userInfo == null){
+            //用户不存在，并发操作可能删除了用户
+            throw new GlobalException(CodeMessage.USER_NOT_EXIST);
+        }
+
+        if(userInfo.getState() == USER_LOCKED){
+            //账户被锁定
+            throw new GlobalException(CodeMessage.USER_LOCKED);
+        }
+        if (userInfo.getPassword().equals(changePasswordVO.getOldPassword())){
+            userInfo.setPassword(changePasswordVO.getNewPassword());
+            int i = userInfoDao.updateByPrimaryKeySelective(userInfo);
+            return i > 0;
+        }else {
+            throw new GlobalException(CodeMessage.ERROR_PASSWORD);
+        }
     }
 
     @Override
-    public boolean changeState() {
+    public boolean changeState(Integer userId) {
         return false;
     }
 
+
     @Override
-    public boolean changeNickName() {
-        return false;
+    public boolean changeNickName(Integer userId, ModifyUserInfoVO modifyUserInfoVO) throws GlobalException {
+        UserInfo userInfo = userInfoDao.selectByPrimaryKey(userId);
+        if(userInfo == null){
+            throw new GlobalException(CodeMessage.USER_NOT_EXIST);
+        }
+        userInfo.setNickName(modifyUserInfoVO.getNick_name());
+        int i = userInfoDao.updateByPrimaryKeySelective(userInfo);
+        return i > 0;
     }
 
     @Override
