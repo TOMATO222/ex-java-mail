@@ -6,6 +6,8 @@ import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailAccountInfoExample;
 import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.entity.MailInfoExample;
+import com.lpq.mail.exception.GlobalException;
+import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.MailService;
 import com.lpq.mail.utils.MailAnalyseUtil;
 import com.lpq.mail.utils.MailDecodeUtil;
@@ -38,7 +40,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public boolean receiveMail(Integer userId) {
+    public boolean receiveMail(Integer userId) throws GlobalException {
         //先删后存，防止数据库里面邮件重复
         MailInfoExample example = new MailInfoExample();
         example.createCriteria().andUserIdEqualTo(userId);
@@ -51,7 +53,7 @@ public class MailServiceImpl implements MailService {
         accountInfoExample.clear();
         //没有邮箱账号直接返回
         if(accountInfoList.isEmpty()){
-            return false ;
+            throw new GlobalException(CodeMessage.NO_MAILBOX);
         }
         //获取每个邮箱中 每一封邮件并写入数据库
         //定义工具
@@ -81,10 +83,10 @@ public class MailServiceImpl implements MailService {
                 }
             } catch (IOException | InterruptedException | ParseException e) {
                 e.printStackTrace();
-                return false;
+                throw new GlobalException(CodeMessage.POP_ERROR) ;
             }
         }
-         return true ;
+        return true ;
     }
 
 
