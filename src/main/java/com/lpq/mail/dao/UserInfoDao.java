@@ -1,5 +1,6 @@
 package com.lpq.mail.dao;
 
+import com.lpq.mail.entity.ManagerInfo;
 import com.lpq.mail.entity.UserInfo;
 import com.lpq.mail.entity.UserInfoExample;
 import java.util.List;
@@ -27,4 +28,6 @@ public interface UserInfoDao {
     int updateByPrimaryKeySelective(UserInfo record);
 
     int updateByPrimaryKey(UserInfo record);
+
+    ManagerInfo selectManager(String username);
 }
