@@ -6,8 +6,10 @@
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="mail_account" jdbcType="VARCHAR" property="mailAccount" />
     <result column="mail_password" jdbcType="VARCHAR" property="mailPassword" />
-    <result column="mail_address" jdbcType="VARCHAR" property="mailAddress" />
-    <result column="mail_port" jdbcType="VARCHAR" property="mailPort" />
+    <result column="mail_pop_address" jdbcType="VARCHAR" property="mailPopAddress" />
+    <result column="mail_pop_port" jdbcType="VARCHAR" property="mailPopPort" />
+    <result column="mail_smtp_address" jdbcType="VARCHAR" property="mailSmtpAddress" />
+    <result column="mail_smtp_port" jdbcType="VARCHAR" property="mailSmtpPort" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,7 +70,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, mail_account, mail_password, mail_address, mail_port
+    id, user_id, mail_account, mail_password, mail_pop_address, mail_pop_port, mail_smtp_address, 
+    mail_smtp_port
   </sql>
   <select id="selectByExample" parameterType="com.lpq.mail.entity.MailAccountInfoExample" resultMap="BaseResultMap">
     select
@@ -102,9 +105,11 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lpq.mail.entity.MailAccountInfo" useGeneratedKeys="true">
     insert into mail_account_info (user_id, mail_account, mail_password, 
-      mail_address, mail_port)
+      mail_pop_address, mail_pop_port, mail_smtp_address, 
+      mail_smtp_port)
     values (#{userId,jdbcType=INTEGER}, #{mailAccount,jdbcType=VARCHAR}, #{mailPassword,jdbcType=VARCHAR}, 
-      #{mailAddress,jdbcType=VARCHAR}, #{mailPort,jdbcType=VARCHAR})
+      #{mailPopAddress,jdbcType=VARCHAR}, #{mailPopPort,jdbcType=VARCHAR}, #{mailSmtpAddress,jdbcType=VARCHAR}, 
+      #{mailSmtpPort,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lpq.mail.entity.MailAccountInfo" useGeneratedKeys="true">
     insert into mail_account_info
@@ -118,11 +123,17 @@
       <if test="mailPassword != null">
         mail_password,
       </if>
-      <if test="mailAddress != null">
-        mail_address,
+      <if test="mailPopAddress != null">
+        mail_pop_address,
       </if>
-      <if test="mailPort != null">
-        mail_port,
+      <if test="mailPopPort != null">
+        mail_pop_port,
+      </if>
+      <if test="mailSmtpAddress != null">
+        mail_smtp_address,
+      </if>
+      <if test="mailSmtpPort != null">
+        mail_smtp_port,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -135,11 +146,17 @@
       <if test="mailPassword != null">
         #{mailPassword,jdbcType=VARCHAR},
       </if>
-      <if test="mailAddress != null">
-        #{mailAddress,jdbcType=VARCHAR},
+      <if test="mailPopAddress != null">
+        #{mailPopAddress,jdbcType=VARCHAR},
       </if>
-      <if test="mailPort != null">
-        #{mailPort,jdbcType=VARCHAR},
+      <if test="mailPopPort != null">
+        #{mailPopPort,jdbcType=VARCHAR},
+      </if>
+      <if test="mailSmtpAddress != null">
+        #{mailSmtpAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="mailSmtpPort != null">
+        #{mailSmtpPort,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -164,11 +181,17 @@
       <if test="record.mailPassword != null">
         mail_password = #{record.mailPassword,jdbcType=VARCHAR},
       </if>
-      <if test="record.mailAddress != null">
-        mail_address = #{record.mailAddress,jdbcType=VARCHAR},
+      <if test="record.mailPopAddress != null">
+        mail_pop_address = #{record.mailPopAddress,jdbcType=VARCHAR},
       </if>
-      <if test="record.mailPort != null">
-        mail_port = #{record.mailPort,jdbcType=VARCHAR},
+      <if test="record.mailPopPort != null">
+        mail_pop_port = #{record.mailPopPort,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mailSmtpAddress != null">
+        mail_smtp_address = #{record.mailSmtpAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mailSmtpPort != null">
+        mail_smtp_port = #{record.mailSmtpPort,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -181,8 +204,10 @@
       user_id = #{record.userId,jdbcType=INTEGER},
       mail_account = #{record.mailAccount,jdbcType=VARCHAR},
       mail_password = #{record.mailPassword,jdbcType=VARCHAR},
-      mail_address = #{record.mailAddress,jdbcType=VARCHAR},
-      mail_port = #{record.mailPort,jdbcType=VARCHAR}
+      mail_pop_address = #{record.mailPopAddress,jdbcType=VARCHAR},
+      mail_pop_port = #{record.mailPopPort,jdbcType=VARCHAR},
+      mail_smtp_address = #{record.mailSmtpAddress,jdbcType=VARCHAR},
+      mail_smtp_port = #{record.mailSmtpPort,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -199,11 +224,17 @@
       <if test="mailPassword != null">
         mail_password = #{mailPassword,jdbcType=VARCHAR},
       </if>
-      <if test="mailAddress != null">
-        mail_address = #{mailAddress,jdbcType=VARCHAR},
+      <if test="mailPopAddress != null">
+        mail_pop_address = #{mailPopAddress,jdbcType=VARCHAR},
       </if>
-      <if test="mailPort != null">
-        mail_port = #{mailPort,jdbcType=VARCHAR},
+      <if test="mailPopPort != null">
+        mail_pop_port = #{mailPopPort,jdbcType=VARCHAR},
+      </if>
+      <if test="mailSmtpAddress != null">
+        mail_smtp_address = #{mailSmtpAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="mailSmtpPort != null">
+        mail_smtp_port = #{mailSmtpPort,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -213,8 +244,10 @@
     set user_id = #{userId,jdbcType=INTEGER},
       mail_account = #{mailAccount,jdbcType=VARCHAR},
       mail_password = #{mailPassword,jdbcType=VARCHAR},
-      mail_address = #{mailAddress,jdbcType=VARCHAR},
-      mail_port = #{mailPort,jdbcType=VARCHAR}
+      mail_pop_address = #{mailPopAddress,jdbcType=VARCHAR},
+      mail_pop_port = #{mailPopPort,jdbcType=VARCHAR},
+      mail_smtp_address = #{mailSmtpAddress,jdbcType=VARCHAR},
+      mail_smtp_port = #{mailSmtpPort,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

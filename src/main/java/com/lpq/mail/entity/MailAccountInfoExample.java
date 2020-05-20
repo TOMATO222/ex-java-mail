@@ -364,143 +364,283 @@ public class MailAccountInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressIsNull() {
-            addCriterion("mail_address is null");
+        public Criteria andMailPopAddressIsNull() {
+            addCriterion("mail_pop_address is null");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressIsNotNull() {
-            addCriterion("mail_address is not null");
+        public Criteria andMailPopAddressIsNotNull() {
+            addCriterion("mail_pop_address is not null");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressEqualTo(String value) {
-            addCriterion("mail_address =", value, "mailAddress");
+        public Criteria andMailPopAddressEqualTo(String value) {
+            addCriterion("mail_pop_address =", value, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressNotEqualTo(String value) {
-            addCriterion("mail_address <>", value, "mailAddress");
+        public Criteria andMailPopAddressNotEqualTo(String value) {
+            addCriterion("mail_pop_address <>", value, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressGreaterThan(String value) {
-            addCriterion("mail_address >", value, "mailAddress");
+        public Criteria andMailPopAddressGreaterThan(String value) {
+            addCriterion("mail_pop_address >", value, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressGreaterThanOrEqualTo(String value) {
-            addCriterion("mail_address >=", value, "mailAddress");
+        public Criteria andMailPopAddressGreaterThanOrEqualTo(String value) {
+            addCriterion("mail_pop_address >=", value, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressLessThan(String value) {
-            addCriterion("mail_address <", value, "mailAddress");
+        public Criteria andMailPopAddressLessThan(String value) {
+            addCriterion("mail_pop_address <", value, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressLessThanOrEqualTo(String value) {
-            addCriterion("mail_address <=", value, "mailAddress");
+        public Criteria andMailPopAddressLessThanOrEqualTo(String value) {
+            addCriterion("mail_pop_address <=", value, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressLike(String value) {
-            addCriterion("mail_address like", value, "mailAddress");
+        public Criteria andMailPopAddressLike(String value) {
+            addCriterion("mail_pop_address like", value, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressNotLike(String value) {
-            addCriterion("mail_address not like", value, "mailAddress");
+        public Criteria andMailPopAddressNotLike(String value) {
+            addCriterion("mail_pop_address not like", value, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressIn(List<String> values) {
-            addCriterion("mail_address in", values, "mailAddress");
+        public Criteria andMailPopAddressIn(List<String> values) {
+            addCriterion("mail_pop_address in", values, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressNotIn(List<String> values) {
-            addCriterion("mail_address not in", values, "mailAddress");
+        public Criteria andMailPopAddressNotIn(List<String> values) {
+            addCriterion("mail_pop_address not in", values, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressBetween(String value1, String value2) {
-            addCriterion("mail_address between", value1, value2, "mailAddress");
+        public Criteria andMailPopAddressBetween(String value1, String value2) {
+            addCriterion("mail_pop_address between", value1, value2, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailAddressNotBetween(String value1, String value2) {
-            addCriterion("mail_address not between", value1, value2, "mailAddress");
+        public Criteria andMailPopAddressNotBetween(String value1, String value2) {
+            addCriterion("mail_pop_address not between", value1, value2, "mailPopAddress");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortIsNull() {
-            addCriterion("mail_port is null");
+        public Criteria andMailPopPortIsNull() {
+            addCriterion("mail_pop_port is null");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortIsNotNull() {
-            addCriterion("mail_port is not null");
+        public Criteria andMailPopPortIsNotNull() {
+            addCriterion("mail_pop_port is not null");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortEqualTo(String value) {
-            addCriterion("mail_port =", value, "mailPort");
+        public Criteria andMailPopPortEqualTo(String value) {
+            addCriterion("mail_pop_port =", value, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortNotEqualTo(String value) {
-            addCriterion("mail_port <>", value, "mailPort");
+        public Criteria andMailPopPortNotEqualTo(String value) {
+            addCriterion("mail_pop_port <>", value, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortGreaterThan(String value) {
-            addCriterion("mail_port >", value, "mailPort");
+        public Criteria andMailPopPortGreaterThan(String value) {
+            addCriterion("mail_pop_port >", value, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortGreaterThanOrEqualTo(String value) {
-            addCriterion("mail_port >=", value, "mailPort");
+        public Criteria andMailPopPortGreaterThanOrEqualTo(String value) {
+            addCriterion("mail_pop_port >=", value, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortLessThan(String value) {
-            addCriterion("mail_port <", value, "mailPort");
+        public Criteria andMailPopPortLessThan(String value) {
+            addCriterion("mail_pop_port <", value, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortLessThanOrEqualTo(String value) {
-            addCriterion("mail_port <=", value, "mailPort");
+        public Criteria andMailPopPortLessThanOrEqualTo(String value) {
+            addCriterion("mail_pop_port <=", value, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortLike(String value) {
-            addCriterion("mail_port like", value, "mailPort");
+        public Criteria andMailPopPortLike(String value) {
+            addCriterion("mail_pop_port like", value, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortNotLike(String value) {
-            addCriterion("mail_port not like", value, "mailPort");
+        public Criteria andMailPopPortNotLike(String value) {
+            addCriterion("mail_pop_port not like", value, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortIn(List<String> values) {
-            addCriterion("mail_port in", values, "mailPort");
+        public Criteria andMailPopPortIn(List<String> values) {
+            addCriterion("mail_pop_port in", values, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortNotIn(List<String> values) {
-            addCriterion("mail_port not in", values, "mailPort");
+        public Criteria andMailPopPortNotIn(List<String> values) {
+            addCriterion("mail_pop_port not in", values, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortBetween(String value1, String value2) {
-            addCriterion("mail_port between", value1, value2, "mailPort");
+        public Criteria andMailPopPortBetween(String value1, String value2) {
+            addCriterion("mail_pop_port between", value1, value2, "mailPopPort");
             return (Criteria) this;
         }
 
-        public Criteria andMailPortNotBetween(String value1, String value2) {
-            addCriterion("mail_port not between", value1, value2, "mailPort");
+        public Criteria andMailPopPortNotBetween(String value1, String value2) {
+            addCriterion("mail_pop_port not between", value1, value2, "mailPopPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressIsNull() {
+            addCriterion("mail_smtp_address is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressIsNotNull() {
+            addCriterion("mail_smtp_address is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressEqualTo(String value) {
+            addCriterion("mail_smtp_address =", value, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressNotEqualTo(String value) {
+            addCriterion("mail_smtp_address <>", value, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressGreaterThan(String value) {
+            addCriterion("mail_smtp_address >", value, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressGreaterThanOrEqualTo(String value) {
+            addCriterion("mail_smtp_address >=", value, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressLessThan(String value) {
+            addCriterion("mail_smtp_address <", value, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressLessThanOrEqualTo(String value) {
+            addCriterion("mail_smtp_address <=", value, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressLike(String value) {
+            addCriterion("mail_smtp_address like", value, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressNotLike(String value) {
+            addCriterion("mail_smtp_address not like", value, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressIn(List<String> values) {
+            addCriterion("mail_smtp_address in", values, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressNotIn(List<String> values) {
+            addCriterion("mail_smtp_address not in", values, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressBetween(String value1, String value2) {
+            addCriterion("mail_smtp_address between", value1, value2, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpAddressNotBetween(String value1, String value2) {
+            addCriterion("mail_smtp_address not between", value1, value2, "mailSmtpAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortIsNull() {
+            addCriterion("mail_smtp_port is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortIsNotNull() {
+            addCriterion("mail_smtp_port is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortEqualTo(String value) {
+            addCriterion("mail_smtp_port =", value, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortNotEqualTo(String value) {
+            addCriterion("mail_smtp_port <>", value, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortGreaterThan(String value) {
+            addCriterion("mail_smtp_port >", value, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortGreaterThanOrEqualTo(String value) {
+            addCriterion("mail_smtp_port >=", value, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortLessThan(String value) {
+            addCriterion("mail_smtp_port <", value, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortLessThanOrEqualTo(String value) {
+            addCriterion("mail_smtp_port <=", value, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortLike(String value) {
+            addCriterion("mail_smtp_port like", value, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortNotLike(String value) {
+            addCriterion("mail_smtp_port not like", value, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortIn(List<String> values) {
+            addCriterion("mail_smtp_port in", values, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortNotIn(List<String> values) {
+            addCriterion("mail_smtp_port not in", values, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortBetween(String value1, String value2) {
+            addCriterion("mail_smtp_port between", value1, value2, "mailSmtpPort");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailSmtpPortNotBetween(String value1, String value2) {
+            addCriterion("mail_smtp_port not between", value1, value2, "mailSmtpPort");
             return (Criteria) this;
         }
     }

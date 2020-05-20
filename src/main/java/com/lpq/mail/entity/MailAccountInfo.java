@@ -30,14 +30,24 @@ public class MailAccountInfo implements Serializable {
     private String mailPassword;
 
     /**
-     * 邮箱的域名地址
+     * pop地址
      */
-    private String mailAddress;
+    private String mailPopAddress;
 
     /**
-     * 端口号
+     * pop端口号
      */
-    private String mailPort;
+    private String mailPopPort;
+
+    /**
+     * smtp地址
+     */
+    private String mailSmtpAddress;
+
+    /**
+     * smtp端口号
+     */
+    private String mailSmtpPort;
 
     private static final long serialVersionUID = 1L;
 }
