@@ -11,6 +11,7 @@ import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.ManagerService;
 import com.lpq.mail.vo.LoginVO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * 创建时间：  2020/5/20
  * 注释：null
  **/
+@Service
 public class ManagerServiceImpl implements ManagerService {
     private UserInfoDao userInfoDao;
     @Override
