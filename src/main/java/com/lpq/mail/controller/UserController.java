@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.lpq.mail.annotations.PassToken;
 import com.lpq.mail.annotations.UserLoginToken;
 import com.lpq.mail.dto.LoginDTO;
+import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
@@ -43,7 +44,7 @@ public class UserController {
      */ 
     @PassToken
     @PostMapping("login")
-    public BaseResult<LoginDTO> login(@RequestBody LoginVO loginVO){
+    public BaseResult<LoginDTO> login(LoginVO loginVO){
         try {
             String login = userService.login(loginVO);
             return BaseResult.success(new LoginDTO(login));
@@ -76,11 +77,14 @@ public class UserController {
         }
     }
 
+
     @UserLoginToken
     @GetMapping("info/accounts")
-    public BaseResult<List<MailInfo>> userMailInfos(HttpServletRequest httpServletRequest){
+    public BaseResult<List<MailAccountInfo>> userMailInfos(HttpServletRequest httpServletRequest){
         try {
-            List<MailInfo> infos = userService.mailInfo(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getId()));
+            String token = httpServletRequest.getHeader("token");
+            String id = JWT.decode(token).getAudience().get(0);
+            List<MailAccountInfo> infos = userService.mailInfo(Integer.valueOf(id));
             return BaseResult.success(infos);
         } catch (GlobalException e) {
             e.printStackTrace();

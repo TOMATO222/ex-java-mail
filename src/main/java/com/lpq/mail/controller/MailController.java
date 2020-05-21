@@ -32,7 +32,7 @@ public class MailController {
 
     @UserLoginToken
     @PostMapping("/send")
-    public BaseResult<Void> sendMail(@RequestBody MailVO mailVO , HttpServletRequest httpServletRequest){
+    public BaseResult<Void> sendMail( MailVO mailVO , HttpServletRequest httpServletRequest){
         MailInfo mailInfo = new MailInfo() ;
         int userId = Integer.parseInt(JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0));
         mailInfo.setUserId(userId);
@@ -43,7 +43,7 @@ public class MailController {
 
         try{
             String success = mailService.send(mailInfo);
-            if(success.equals("250")){
+            if(success.equals("25")){
                 return BaseResult.success(null) ;
             }else if(success.equals("554")){
                 return BaseResult.fail(CodeMessage.JUNK_MAIL);

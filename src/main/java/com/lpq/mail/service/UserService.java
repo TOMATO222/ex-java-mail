@@ -1,5 +1,6 @@
 package com.lpq.mail.service;
 
+import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.entity.UserInfo;
 import com.lpq.mail.exception.GlobalException;
@@ -70,14 +71,15 @@ public interface UserService {
      */
     UserInfo info(Integer userId);
 
+
     /**
-     * description: 查询用户的邮箱 <br>
+     * description: mailInfo <br>
      * version: 1.0 <br>
-     * date: 2020.05.21 10:03 <br>
+     * date: 2020.05.21 14:35 <br>
      * author: Dominikyang <br>
-     *
+     * 
      * @param userId
-     * @return java.util.List<com.lpq.mail.entity.MailInfo>
-     */
-    List<MailInfo> mailInfo(Integer userId) throws GlobalException;
+     * @return java.util.List<com.lpq.mail.entity.MailAccountInfo>
+     */ 
+    List<MailAccountInfo> mailInfo(Integer userId) throws GlobalException;
 }
