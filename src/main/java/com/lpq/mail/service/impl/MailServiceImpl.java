@@ -37,7 +37,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public boolean send(MailInfo mailInfo)throws GlobalException {
+    public String send(MailInfo mailInfo)throws GlobalException {
         SMTPUtil smtp = new SMTPUtil();
         MailAccountInfoExample example = new MailAccountInfoExample();
         example.createCriteria().andMailAccountEqualTo(mailInfo.getFrom()).andUserIdEqualTo(mailInfo.getUserId());
@@ -46,12 +46,8 @@ public class MailServiceImpl implements MailService {
         if(mailAccountInfo.size()!=1){
             throw new GlobalException(CodeMessage.NO_MAILBOX);
         }
-        boolean success = smtp.SMTPserver(mailInfo,mailAccountInfo.get(0));
-        if(success){
-            return true ;
-        }else{
-            throw new GlobalException(CodeMessage.SEND_MAIL_ERROR);
-        }
+        String success = smtp.SMTPserver(mailInfo,mailAccountInfo.get(0));
+        return success ;
     }
 
     @Override

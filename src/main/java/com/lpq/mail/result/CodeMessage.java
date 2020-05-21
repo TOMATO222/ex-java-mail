@@ -40,10 +40,10 @@ public class CodeMessage {
     public static final CodeMessage POP_ERROR = new CodeMessage(2002,"POP3服务运行错误");
     public static final CodeMessage SEND_MAIL_ERROR = new CodeMessage(2003,"发送邮件失败");
     public static final CodeMessage GET_MAIL_ERROR = new CodeMessage(2004,"获取邮件失败");
+    public static final CodeMessage JUNK_MAIL = new CodeMessage(2005,"检测为垃圾邮件，发送失败") ;
 
     public static final CodeMessage NOT_MANAGER = new CodeMessage(3001,"没有管理员权限");
     public static final CodeMessage CHANGE_STATE_ERROR = new CodeMessage(3002,"修改状态失败") ;
-
 
 
     private int code;

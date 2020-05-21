@@ -16,7 +16,7 @@ public interface MailService {
      * @author: Wei Yuyang
      * @time: 2020.05.19
      */
-    boolean send(MailInfo mailInfo) throws GlobalException;
+    String send(MailInfo mailInfo) throws GlobalException;
 
     /**
      * description: 读取邮件，存入数据库

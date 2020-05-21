@@ -42,10 +42,12 @@ public class MailController {
         mailInfo.setSubject(mailVO.getSubject());
 
         try{
-            boolean success = mailService.send(mailInfo);
-            if(success){
+            String success = mailService.send(mailInfo);
+            if(success.equals("250")){
                 return BaseResult.success(null) ;
-            }else{
+            }else if(success.equals("554")){
+                return BaseResult.fail(CodeMessage.JUNK_MAIL);
+            }else {
                 return BaseResult.fail(CodeMessage.SEND_MAIL_ERROR);
             }
         } catch (GlobalException e) {

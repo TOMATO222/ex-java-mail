@@ -2,6 +2,7 @@ package com.lpq.mail.utils;
 
 import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
+import com.lpq.mail.exception.GlobalException;
 
 import java.io.*;
 import java.net.Socket;
@@ -15,10 +16,11 @@ import java.util.Base64;
  * 注释：null
  **/
 public class SMTPUtil {
-    public boolean SMTPserver(MailInfo mailInfo, MailAccountInfo mailAccountInfo){
+    public String SMTPserver(MailInfo mailInfo, MailAccountInfo mailAccountInfo){
         int port = Integer.valueOf(mailAccountInfo.getMailSmtpPort());
         String server = mailAccountInfo.getMailSmtpAddress();
-        Socket client = null ;
+        Socket client = null;
+        String re = null ;
         try{
             //建立连接与输入输出流
             client = new Socket(server,port);
@@ -29,40 +31,48 @@ public class SMTPUtil {
             //握手过程
             String[] account = mailAccountInfo.getMailAccount().split("@");
             socketout.println("helo "+account[1]);
-            System.out.println(socketin.readLine());
+            re = socketin.readLine().substring(0,2);
+            System.out.println(re);
             socketout.println("auth login");
-            System.out.println(socketin.readLine());
+            re = socketin.readLine().substring(0,2);
+            System.out.println(re);
             Base64.Encoder encoder = Base64.getEncoder();
             account[0] = encoder.encodeToString(account[0].getBytes(StandardCharsets.UTF_8));
             socketout.println(account[0]);
-            System.out.println(socketin.readLine());
+            re = socketin.readLine().substring(0,2);
+            System.out.println(re);
             String psw = mailAccountInfo.getMailPassword();
             psw = encoder.encodeToString(psw.getBytes(StandardCharsets.UTF_8));
             socketout.println(psw);
-            System.out.println(socketin.readLine());
+            re = socketin.readLine().substring(0,2);
+            System.out.println(re);
             socketout.println("mail from: " + "<" + mailInfo.getFrom() + ">");
-            System.out.println(socketin.readLine());
+            re = socketin.readLine().substring(0,2);
+            System.out.println(re);
             socketout.println("rcpt to: " + "<" + mailInfo.getTo() + ">");
-            System.out.println(socketin.readLine());
+            re = socketin.readLine().substring(0,2);
+            System.out.println(re);
             socketout.println("data\r");
             System.out.println(socketin.readLine());
-            System.out.println(socketin.readLine());
+            re = socketin.readLine().substring(0,2);
+            System.out.println(re);
             //发送正文
             socketout.println("subject:"+mailInfo.getSubject());
             socketout.println(mailInfo.getContent());
             socketout.println(".");
-            System.out.println(socketin.readLine());
+            re = socketin.readLine().substring(0,2);
+            System.out.println(re);
             socketout.println("rset");
             socketout.println("quit");
             client.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
-            return false;
+            return e.getMessage();
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return e.getMessage();
         }
-        return true ;
+        return re;
     }
 
 }
