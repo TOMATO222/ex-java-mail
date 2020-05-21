@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -72,6 +74,15 @@ public class MailController {
             }
         } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return BaseResult.fail(null);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return BaseResult.fail(null);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return BaseResult.fail(null);
         }
 
     }

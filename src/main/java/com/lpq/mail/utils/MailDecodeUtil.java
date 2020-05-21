@@ -9,11 +9,13 @@ import java.util.Base64;
  */
 public class MailDecodeUtil {
 
-    public String codeTransform(String text, String charset, String charout) throws UnsupportedEncodingException {
+    public String codeTransform(String text, String charset, String charget) throws UnsupportedEncodingException {
         //文本转二进制
-        String Str = new String( text.getBytes(charset));
+        String str = null ;
+        str = new String(text.getBytes(charset));
         //二进制base64解码  再转输出文本
-        String result = new String(Base64.getDecoder().decode(Str),charout);
+        String result = new String(Base64.getDecoder().decode(str),charget);
         return result;
     }
+
 }
