@@ -2,7 +2,10 @@ package com.lpq.mail.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.lpq.mail.dao.MailInfoDao;
 import com.lpq.mail.dao.UserInfoDao;
+import com.lpq.mail.entity.MailInfo;
+import com.lpq.mail.entity.MailInfoExample;
 import com.lpq.mail.entity.UserInfo;
 import com.lpq.mail.entity.UserInfoExample;
 import com.lpq.mail.exception.GlobalException;
@@ -24,13 +27,15 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private UserInfoDao userInfoDao;
+    private MailInfoDao mailInfoDao;
 
     //用户锁定状态，state = 1
     public static final int USER_LOCKED = 1;
 
     @Autowired
-    public UserServiceImpl(UserInfoDao userInfoDao) {
+    public UserServiceImpl(UserInfoDao userInfoDao, MailInfoDao mailInfoDao) {
         this.userInfoDao = userInfoDao;
+        this.mailInfoDao = mailInfoDao;
     }
 
     @Override
@@ -101,5 +106,16 @@ public class UserServiceImpl implements UserService {
         token= JWT.create().withAudience(String.valueOf(user.getId()))
                 .sign(Algorithm.HMAC256(user.getPassword()));
         return token;
+    }
+
+    @Override
+    public List<MailInfo> mailInfo(Integer userId) throws GlobalException {
+        MailInfoExample example = new MailInfoExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        List<MailInfo> mailInfos = mailInfoDao.selectByExample(example);
+        if(mailInfos.size() < 1){
+            throw new GlobalException(CodeMessage.EMPTY_USER_MAIL_LIST);
+        }
+        return mailInfos;
     }
 }

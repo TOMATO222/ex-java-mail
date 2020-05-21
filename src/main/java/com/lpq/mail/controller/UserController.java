@@ -4,20 +4,18 @@ import com.auth0.jwt.JWT;
 import com.lpq.mail.annotations.PassToken;
 import com.lpq.mail.annotations.UserLoginToken;
 import com.lpq.mail.dto.LoginDTO;
+import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.UserService;
-import com.lpq.mail.vo.ChangePasswordVO;
 import com.lpq.mail.vo.LoginVO;
 import com.lpq.mail.vo.ModifyUserInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Wei yuyaung
@@ -45,7 +43,7 @@ public class UserController {
      */ 
     @PassToken
     @PostMapping("login")
-    public BaseResult<LoginDTO> login(LoginVO loginVO){
+    public BaseResult<LoginDTO> login(@RequestBody LoginVO loginVO){
         try {
             String login = userService.login(loginVO);
             return BaseResult.success(new LoginDTO(login));
@@ -78,5 +76,15 @@ public class UserController {
         }
     }
 
-
+    @UserLoginToken
+    @GetMapping("info/accounts")
+    public BaseResult<List<MailInfo>> userMailInfos(HttpServletRequest httpServletRequest){
+        try {
+            List<MailInfo> infos = userService.mailInfo(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getId()));
+            return BaseResult.success(infos);
+        } catch (GlobalException e) {
+            e.printStackTrace();
+            return BaseResult.fail(e.getCodeMessage());
+        }
+    }
 }

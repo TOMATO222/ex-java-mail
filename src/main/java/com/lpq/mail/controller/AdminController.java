@@ -9,9 +9,7 @@ import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.ManagerService;
-import com.lpq.mail.service.UserService;
 import com.lpq.mail.vo.LoginVO;
-import com.lpq.mail.vo.ModifyUserInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
