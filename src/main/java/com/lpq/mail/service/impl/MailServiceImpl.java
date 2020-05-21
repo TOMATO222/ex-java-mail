@@ -31,14 +31,22 @@ public class MailServiceImpl implements MailService {
     private MailAccountInfoDao mailAccountInfoDao;
 
     @Autowired
-    public MailServiceImpl(MailInfoDao mailInfoDao) {
+    public MailServiceImpl(MailInfoDao mailInfoDao , MailAccountInfoDao mailAccountInfoDao) {
         this.mailInfoDao = mailInfoDao;
+        this.mailAccountInfoDao = mailAccountInfoDao ;
     }
 
     @Override
-    public boolean send(MailInfo mailInfo , MailAccountInfo mailAccountInfo)throws GlobalException {
+    public boolean send(MailInfo mailInfo)throws GlobalException {
         SMTPUtil smtp = new SMTPUtil();
-        boolean success = smtp.SMTPserver(mailInfo,mailAccountInfo);
+        MailAccountInfoExample example = new MailAccountInfoExample();
+        example.createCriteria().andMailAccountEqualTo(mailInfo.getFrom()).andUserIdEqualTo(mailInfo.getUserId());
+        List<MailAccountInfo> mailAccountInfo = mailAccountInfoDao.selectByExample(example);
+        example.clear();
+        if(mailAccountInfo.size()!=1){
+            throw new GlobalException(CodeMessage.NO_MAILBOX);
+        }
+        boolean success = smtp.SMTPserver(mailInfo,mailAccountInfo.get(0));
         if(success){
             return true ;
         }else{
@@ -56,7 +64,8 @@ public class MailServiceImpl implements MailService {
         //获取用户所有邮箱账号
         MailAccountInfoExample accountInfoExample = new MailAccountInfoExample() ;
         accountInfoExample.createCriteria().andUserIdEqualTo(userId);
-        List<MailAccountInfo> accountInfoList = mailAccountInfoDao.selectByExample(accountInfoExample);
+        List<MailAccountInfo> accountInfoList = null ;
+        accountInfoList = mailAccountInfoDao.selectByExample(accountInfoExample);
         accountInfoExample.clear();
         //没有邮箱账号直接返回
         if(accountInfoList.isEmpty()){
@@ -68,8 +77,8 @@ public class MailServiceImpl implements MailService {
         MailDecodeUtil mailDecodeUtil = new MailDecodeUtil();
         //遍历邮箱账号
         for (MailAccountInfo mailaccount: accountInfoList) {
-            POPUtil popUtil = new POPUtil(mailaccount.getMailPopAddress(),Integer.valueOf(mailaccount.getMailPopPort()));
             try{
+                POPUtil popUtil = new POPUtil(mailaccount.getMailPopAddress(),Integer.parseInt(mailaccount.getMailPopPort()));
                 popUtil.user(mailaccount.getMailAccount());
                 popUtil.pass(mailaccount.getMailPassword());
                 int mailnum = popUtil.stat();
@@ -96,5 +105,15 @@ public class MailServiceImpl implements MailService {
         return true ;
     }
 
-
+    @Override
+    public List<MailInfo> takeMail(Integer userId) throws GlobalException {
+        try{
+            MailInfoExample example = new MailInfoExample();
+            example.createCriteria().andUserIdEqualTo(userId);
+            List<MailInfo> mails = mailInfoDao.selectByExample(example);
+            return mails ;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }

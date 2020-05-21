@@ -4,6 +4,8 @@ import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.exception.GlobalException;
 
+import java.util.List;
+
 /**
  * @author Wei yuyaung
  * @date 2020.05.19 12:27
@@ -14,7 +16,7 @@ public interface MailService {
      * @author: Wei Yuyang
      * @time: 2020.05.19
      */
-    boolean send(MailInfo mailInfo , MailAccountInfo mailAccountInfo) throws GlobalException;
+    boolean send(MailInfo mailInfo) throws GlobalException;
 
     /**
      * description: 读取邮件，存入数据库
@@ -22,4 +24,6 @@ public interface MailService {
      * @time: 2020.05.19
      */
     boolean receiveMail(Integer userId) throws GlobalException;
+
+    List<MailInfo> takeMail(Integer userId) throws GlobalException;
 }

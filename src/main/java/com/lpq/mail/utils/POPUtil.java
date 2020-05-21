@@ -13,8 +13,10 @@ public class POPUtil {
     private Socket socket;
     private String server;
     private int port;
+    private  BufferedWriter out ;
+    private  BufferedReader in ;
 
-    public POPUtil(String server, int port) {
+    public POPUtil(String server, int port) throws IOException {
         this.server = server;
         this.port = port;
         try {
@@ -22,6 +24,8 @@ public class POPUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
 
     public String getReturn(BufferedReader in) {
@@ -40,7 +44,7 @@ public class POPUtil {
         return stringTokenizer.nextToken();
     }
 
-    public String sendServer(String str, BufferedReader in, BufferedWriter out) throws IOException {
+    public String sendServer(String str) throws IOException {
         out.write(str);
         out.newLine();
         out.flush();
@@ -49,13 +53,11 @@ public class POPUtil {
 
     public boolean user(String user) throws IOException {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            String result = getResult(sendServer("user " + user, in, out));
+            String result = getResult(getReturn(in));
             if (!"+OK".equals(result)) {
                 return false;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
@@ -63,9 +65,8 @@ public class POPUtil {
 
     public boolean pass(String pwd) {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            String result = getResult(sendServer("pass " + pwd, in, out));
+            String result = null ;
+            result = getResult(sendServer("pass " + pwd));
             if (!"+OK".equals(result)) {
                 return false;
             }
@@ -78,9 +79,7 @@ public class POPUtil {
     public int stat() {
         int mailNum = 0;
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            String line = sendServer("stat", in, out);
+            String line = sendServer("stat");
             StringTokenizer st = new StringTokenizer(line, " ");
             String result = st.nextToken();
             if (st.hasMoreTokens()) {
@@ -100,9 +99,7 @@ public class POPUtil {
     public void list() {
         String message = null;
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            String line = sendServer("list", in, out);
+            String line = sendServer("list");
             while (!".".equalsIgnoreCase(line)) {
                 message = message + line + "\n";
                 line = in.readLine().toString();
@@ -113,10 +110,7 @@ public class POPUtil {
     }
     public void list(int mailNumber) throws IOException {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-            String result = getResult(sendServer("list " + mailNumber, in, out));
+            String result = getResult(sendServer("list " + mailNumber));
             if (!"+OK".equals(result)) {
                 throw new IOException("list错误!");
             }
@@ -127,9 +121,7 @@ public class POPUtil {
     public String retr(int mailNum) throws IOException, InterruptedException{
         String message = null ;
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            String result = getResult(sendServer("retr "+mailNum,in,out));
+            String result = getResult(sendServer("retr "+mailNum));
             if(!"+OK".equals(result)){
                 throw new IOException("接收邮件出错!");
             }
@@ -153,9 +145,8 @@ public class POPUtil {
     }
     public boolean quit(){
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            String result = getResult(sendServer("QUIT",in,out));
+            String result = getResult(sendServer("QUIT"));
+            socket.close();
             if(!"+OK".equals(result)){
                 return false;
             }

@@ -9,6 +9,7 @@ import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.ManagerService;
+import com.lpq.mail.vo.ChangeStateVO;
 import com.lpq.mail.vo.LoginVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class AdminController {
     public BaseResult<List<UserInfo>> viewUserList(){
         try{
             List<UserInfo> users = managerService.loadAllUser();
-            return BaseResult.success(null);
+            return BaseResult.success(users);
         } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
         }
@@ -51,9 +52,9 @@ public class AdminController {
 
     @UserLoginToken
     @PostMapping("userManage/changeState")
-    public BaseResult<Void> changeUserState(@RequestBody Integer state, HttpServletRequest httpServletRequest){
+    public BaseResult<Void> changeUserState(@RequestBody ChangeStateVO changeStateVO, HttpServletRequest httpServletRequest){
         try{
-            boolean success = managerService.changeState(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getId()),state);
+            boolean success = managerService.changeState(changeStateVO.getUserId(),changeStateVO.getState());
             if(success){
                 return BaseResult.success(null);
             }else{

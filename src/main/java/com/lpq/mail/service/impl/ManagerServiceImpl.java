@@ -11,6 +11,7 @@ import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.ManagerService;
 import com.lpq.mail.vo.LoginVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +24,10 @@ import java.util.List;
 @Service
 public class ManagerServiceImpl implements ManagerService {
     private UserInfoDao userInfoDao;
+    @Autowired
+    public ManagerServiceImpl(UserInfoDao userInfoDao){
+        this.userInfoDao = userInfoDao ;
+    }
     @Override
     public String login(LoginVO loginVO) throws GlobalException {
         UserInfoExample example = new UserInfoExample();
