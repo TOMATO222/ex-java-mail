@@ -1,27 +1,21 @@
 <template>
-  <el-container>
-    <el-header>
-      <Header/>
-    </el-header>
-    <el-aside>
-      <Navbar/>
-    </el-aside>
-  </el-container>
+    <el-menu :default-active="this.$router.path" router>
+      <el-menu-item v-for="(item,i) in navList" :key="i" :index="item.name">
+        {{ item.navItem }}
+      </el-menu-item>
+    </el-menu>
 </template>
 
 <script>
-  import Navbar from "../components/Navbar";
-  import Header from "../components/Header";
     export default {
-        name: "Main",
-        components: {Header, Navbar},
+        name: "Navbar",
         data() {
             return {
                 activeIndex: '1',
                 activeIndex2: '1',
                 navList:[
                     {name:'/client',navItem:'客户管理'},
-                    {name:'/server',navItem:'服务管理'},
+                    {name:'/server',navItem:'邮件管理'},
                     {name:'/system',navItem:'系统参数设置'},
                 ]
             };
@@ -29,7 +23,7 @@
         methods: {
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);
-            },
+            }
         }
     }
 </script>
