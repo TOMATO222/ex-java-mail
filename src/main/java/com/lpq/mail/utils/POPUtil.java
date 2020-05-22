@@ -1,7 +1,16 @@
 package com.lpq.mail.utils;
 
+import com.lpq.mail.dao.MailInfoDao;
+import com.lpq.mail.entity.MailAccountInfo;
+import com.lpq.mail.entity.MailInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.*;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -10,23 +19,58 @@ import java.util.StringTokenizer;
  * 注释：null
  **/
 public class POPUtil {
-    private Socket socket;
-    private String server;
-    private int port;
-    private  BufferedWriter out ;
-    private  BufferedReader in ;
 
-    public POPUtil(String server, int port) throws IOException {
-        this.server = server;
-        this.port = port;
-        try {
-            this.socket = new Socket(server, port);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public List<MailInfo> POPServer(MailAccountInfo mailAccountInfo) throws IOException, InterruptedException, ParseException {
+        List<MailInfo> mails = new ArrayList<MailInfo>();
+        int port = Integer.valueOf(mailAccountInfo.getMailPopPort());
+        String server = mailAccountInfo.getMailPopAddress();
+        Socket socket = null ;
+        //定义工具
+        MailAnalyseUtil mailAnalyseUtil = new MailAnalyseUtil();
+        MailDecodeUtil mailDecodeUtil = new MailDecodeUtil();
+        try{
+            socket = new Socket(server,port);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            user(mailAccountInfo.getMailAccount(),in,out);
+            pass(mailAccountInfo.getMailPassword(),in,out);
+            int mailNum = stat(in,out);
+            list(in,out);
+            for(int i=1 ; i<=mailNum ;i++){
+                String message = retr(i,in,out);
+                MailInfo mailInfo = new MailInfo();
+                mailInfo.setUserId(mailAccountInfo.getUserId());
+                mailInfo.setFrom(mailAnalyseUtil.from(message));
+                mailInfo.setTo(mailAnalyseUtil.to(message));
+                mailInfo.setDate(mailAnalyseUtil.date(message));
+                String charset = mailAnalyseUtil.subjectCharset(message);
+                if(charset == null || charset.length()==0){
+                    mailInfo.setSubject(mailAnalyseUtil.subjectText(message));
+                }else{
+                    mailInfo.setSubject(mailDecodeUtil.codeTransform(mailAnalyseUtil.subjectText(message),charset,"gbk"));
+                }
+                charset = mailAnalyseUtil.bodyCharset(message);
+                if(charset == null || charset.length()==0){
+                    mailInfo.setContent(mailAnalyseUtil.bodyText(message));
+                }else{
+                    mailInfo.setContent(mailDecodeUtil.codeTransform(mailAnalyseUtil.bodyText(message),charset,"gbk"));
+                }
+
+                mails.add(mailInfo);
+            }
+            socket.close();
+            return mails ;
+        } catch (UnknownHostException e) {
+            throw e;
+        } catch (IOException e) {
+            throw e;
+        } catch (InterruptedException e) {
+            throw e;
+        } catch (ParseException e) {
+            throw e;
         }
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
+
 
     public String getReturn(BufferedReader in) {
         String line = null;
@@ -44,116 +88,98 @@ public class POPUtil {
         return stringTokenizer.nextToken();
     }
 
-    public String sendServer(String str) throws IOException {
+    public String sendServer(String str,BufferedReader in,BufferedWriter out) throws IOException {
         out.write(str);
         out.newLine();
         out.flush();
         return getReturn(in);
     }
 
-    public boolean user(String user) throws IOException {
+    public void user(String user,BufferedReader in,BufferedWriter out) throws IOException {
         try {
             String result = getResult(getReturn(in));
             if (!"+OK".equals(result)) {
-                return false;
+                throw new IOException("连接服务器失败!");
+            }
+            result=getResult(sendServer("user "+user,in,out));
+            if(!"+OK".equals(result)){
+                throw new IOException("用户名错误!");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
     }
 
-    public boolean pass(String pwd) {
+    public void pass(String pwd,BufferedReader in,BufferedWriter out) {
         try {
             String result = null ;
-            result = getResult(sendServer("pass " + pwd));
+            result = getResult(sendServer("pass " + pwd,in,out));
             if (!"+OK".equals(result)) {
-                return false;
+                throw new IOException("密码错误!");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return true;
     }
 
-    public int stat() {
+    public int stat(BufferedReader in,BufferedWriter out) throws IOException {
+        String result = null;
+        String line = null;
         int mailNum = 0;
-        try {
-            String line = sendServer("stat");
-            StringTokenizer st = new StringTokenizer(line, " ");
-            String result = st.nextToken();
-            if (st.hasMoreTokens()) {
-                mailNum = Integer.parseInt(st.nextToken());
-            } else {
-                mailNum = 0;
-            }
-            if (!"+OK".equals(result)) {
-                throw new IOException("查看邮箱状态出错!");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            return mailNum;
+        line=sendServer("stat",in,out);
+        StringTokenizer st=new StringTokenizer(line," ");
+        result=st.nextToken();
+        if(st.hasMoreTokens()) {
+            mailNum=Integer.parseInt(st.nextToken());
+        } else{
+            mailNum=0;
+        }
+        if(!"+OK".equals(result)){
+            throw new IOException("查看邮箱状态出错!");
+        }
+        return mailNum;
+    }
+    public void list(BufferedReader in,BufferedWriter out) throws IOException{
+        String message = "";
+        String line = null;
+        line=sendServer("list",in,out);
+        while(!".".equalsIgnoreCase(line)){
+            message=message+line+"\n";
+            line=in.readLine().toString();
         }
     }
-    public void list() {
-        String message = null;
-        try {
-            String line = sendServer("list");
-            while (!".".equalsIgnoreCase(line)) {
-                message = message + line + "\n";
-                line = in.readLine().toString();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void list_one(int mailNumber ,BufferedReader in,BufferedWriter out) throws IOException{
+        String result = null;
+        result = getResult(sendServer("list "+mailNumber,in,out));
+        if(!"+OK".equals(result)){
+            throw new IOException("list错误!");
         }
     }
-    public void list(int mailNumber) throws IOException {
-        try {
-            String result = getResult(sendServer("list " + mailNumber));
-            if (!"+OK".equals(result)) {
-                throw new IOException("list错误!");
+    public String retr(int mailNum,BufferedReader in,BufferedWriter out) throws IOException, InterruptedException{
+        String result = null;
+        result=getResult(sendServer("retr "+mailNum,in,out));
+        if(!"+OK".equals(result)){
+            throw new IOException("接收邮件出错!");
+        }
+        String message = "";
+        String line = null;
+        try{
+            line=in.readLine().toString();
+            while(!".".equalsIgnoreCase(line)){
+                message=message+line+"\n";
+                line=in.readLine().toString();
             }
-        } catch (IOException e) {
+        }catch(Exception e){
             e.printStackTrace();
         }
-    }
-    public String retr(int mailNum) throws IOException, InterruptedException{
-        String message = null ;
-        try {
-            String result = getResult(sendServer("retr "+mailNum));
-            if(!"+OK".equals(result)){
-                throw new IOException("接收邮件出错!");
-            }
-            String line = null ;
-            try{
-                line = in.readLine().toString();
-                while(!".".equalsIgnoreCase(line)){
-                    message=message+line+"\n";
-                    line=in.readLine().toString();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Thread.sleep(3000);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Thread.sleep(3000);
         return message;
     }
-    public boolean quit(){
-        try {
-            String result = getResult(sendServer("QUIT"));
-            socket.close();
-            if(!"+OK".equals(result)){
-                return false;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+    public void quit(BufferedReader in,BufferedWriter out) throws IOException{
+        String result;
+        result=getResult(sendServer("QUIT",in,out));
+        if(!"+OK".equals(result)){
+            throw new IOException("未能正确退出");
         }
-        return true ;
     }
 }

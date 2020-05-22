@@ -62,15 +62,21 @@ public class MailAnalyseUtil {
     }
 
     public String subjectCharset(String context) {
-        String pattern = "(Subject: ).*(=\\?)(.*)(\\?)" ;
+        String pattern = "(Subject: )(.*?)\\n" ;
         Pattern r = Pattern.compile(pattern) ;
         Matcher m = r.matcher(context) ;
         String[] subject = null ;
         if (m.find( )) {
-            subject = m.group(3).split("\\?");
-            String str =  subject[0] ;
-            if(str.contains("\"")){
-                str = str.replaceAll("\"" , "");
+            String x = m.group(2);
+            String str = null ;
+            if(x.contains("?")){
+                subject = x.split("\\?");
+                str =  subject[1] ;
+                if(str.contains("\"")){
+                    str=str.replace("\"","");
+                }
+            }else{
+                return  null ;
             }
             return str ;
         } else {
@@ -79,13 +85,20 @@ public class MailAnalyseUtil {
     }
 
     public String subjectText(String context) {
-        String pattern = "(Subject: ).*(=\\?)(.*)(\\?)" ;
+        String pattern = "(Subject: )(.*?)\\n" ;
         Pattern r = Pattern.compile(pattern) ;
         Matcher m = r.matcher(context) ;
         String[] subject = null ;
         if (m.find( )) {
-            subject = m.group(3).split("\\?");
-            return subject[2] ;
+            String x = m.group(2);
+            String str = null ;
+            if(x.contains("?")){
+                subject = x.split("\\?");
+                str =  subject[3] ;
+            }else{
+                str = m.group(2);
+            }
+            return str ;
         } else {
             return null;
         }
@@ -97,7 +110,11 @@ public class MailAnalyseUtil {
         Pattern r = Pattern.compile(pattern) ;
         Matcher m = r.matcher(text) ;
         if (m.find( )) {
-            return m.group(2);
+            String s = m.group(2);
+            if(s.contains("\"")){
+                s=s.replace("\"","");
+            }
+            return s;
         } else {
             return null ;
         }
