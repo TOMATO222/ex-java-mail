@@ -10,6 +10,8 @@ import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.UserService;
+import com.lpq.mail.vo.AddMailAccountVO;
+import com.lpq.mail.vo.ChangePasswordVO;
 import com.lpq.mail.vo.LoginVO;
 import com.lpq.mail.vo.ModifyUserInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +79,21 @@ public class UserController {
         }
     }
 
+    @UserLoginToken
+    @PostMapping("change/password")
+    public BaseResult<Void>changePassword(@RequestBody ChangePasswordVO changePasswordVO , HttpServletRequest httpServletRequest){
+        try{
+            boolean success = userService.changePassword(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getId()),changePasswordVO);
+            if(success){
+                return BaseResult.success(null);
+            }else{
+                return BaseResult.fail(CodeMessage.CHANGE_PASSWORD_FAIL);
+            }
+        } catch (GlobalException e) {
+            return BaseResult.fail(e.getCodeMessage());
+        }
+    }
+
 
     @UserLoginToken
     @GetMapping("info/accounts")
@@ -88,6 +105,21 @@ public class UserController {
             return BaseResult.success(infos);
         } catch (GlobalException e) {
             e.printStackTrace();
+            return BaseResult.fail(e.getCodeMessage());
+        }
+    }
+
+    @UserLoginToken
+    @PostMapping("addAccount")
+    public BaseResult<Void> addAccount(@RequestBody AddMailAccountVO addMailAccountVO , HttpServletRequest httpServletRequest){
+        try{
+            boolean success = userService.addMailAccount(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getId()),addMailAccountVO);
+            if(success){
+                return BaseResult.success(null);
+            }else{
+                return BaseResult.fail(CodeMessage.INSERT_MAIL_ACCOUNT_ERROR);
+            }
+        } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
         }
     }

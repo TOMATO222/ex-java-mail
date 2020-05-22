@@ -2,6 +2,7 @@ package com.lpq.mail.utils;
 
 import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
+import com.lpq.mail.entity.MailSendInfo;
 import com.lpq.mail.exception.GlobalException;
 
 import java.io.*;
@@ -16,7 +17,7 @@ import java.util.Base64;
  * 注释：null
  **/
 public class SMTPUtil {
-    public String SMTPserver(MailInfo mailInfo, MailAccountInfo mailAccountInfo){
+    public String SMTPserver(MailSendInfo mailInfo, MailAccountInfo mailAccountInfo){
         int port = Integer.valueOf(mailAccountInfo.getMailSmtpPort());
         String server = mailAccountInfo.getMailSmtpAddress();
         Socket client = null;

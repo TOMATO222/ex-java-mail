@@ -9,6 +9,7 @@ import com.lpq.mail.entity.*;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.UserService;
+import com.lpq.mail.vo.AddMailAccountVO;
 import com.lpq.mail.vo.ChangePasswordVO;
 import com.lpq.mail.vo.LoginVO;
 import com.lpq.mail.vo.ModifyUserInfoVO;
@@ -78,12 +79,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean changeState(Integer userId) {
-        return false;
-    }
-
-
-    @Override
     public boolean changeNickName(Integer userId, ModifyUserInfoVO modifyUserInfoVO) throws GlobalException {
         UserInfo userInfo = userInfoDao.selectByPrimaryKey(userId);
         if(userInfo == null){
@@ -115,5 +110,23 @@ public class UserServiceImpl implements UserService {
             throw new GlobalException(CodeMessage.EMPTY_USER_MAIL_LIST);
         }
         return mailInfos;
+    }
+
+    @Override
+    public boolean addMailAccount(Integer userId, AddMailAccountVO addMailAccountVO) throws GlobalException {
+        MailAccountInfo mailAccountInfo = new MailAccountInfo();
+        mailAccountInfo.setUserId(userId);
+        mailAccountInfo.setMailAccount(addMailAccountVO.getMail_account());
+        mailAccountInfo.setMailPassword(addMailAccountVO.getMail_password());
+        mailAccountInfo.setMailPopAddress(addMailAccountVO.getMail_pop_address());
+        mailAccountInfo.setMailPopPort(addMailAccountVO.getMail_pop_port());
+        mailAccountInfo.setMailSmtpAddress(addMailAccountVO.getMail_smtp_address());
+        mailAccountInfo.setMailSmtpPort(addMailAccountVO.getMail_smtp_port());
+        int success = mailAccountInfoDao.insert(mailAccountInfo);
+        if(success!=0){
+            return true ;
+        }else {
+            throw new GlobalException(CodeMessage.INSERT_MAIL_ACCOUNT_ERROR);
+        }
     }
 }
