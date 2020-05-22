@@ -2,6 +2,7 @@ package com.lpq.mail.service;
 
 import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
+import com.lpq.mail.entity.MailSendInfo;
 import com.lpq.mail.exception.GlobalException;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public interface MailService {
      * @author: Wei Yuyang
      * @time: 2020.05.19
      */
-    String send(MailInfo mailInfo) throws GlobalException;
+    String send(MailSendInfo mailInfo) throws GlobalException;
 
     /**
      * description: 读取邮件，存入数据库
@@ -28,4 +29,6 @@ public interface MailService {
     boolean receiveMail(Integer userId) throws GlobalException, InterruptedException, ParseException, IOException;
 
     List<MailInfo> takeMail(Integer userId) throws GlobalException;
+
+    List<MailSendInfo> takeSendMail(Integer userId) throws GlobalException;
 }

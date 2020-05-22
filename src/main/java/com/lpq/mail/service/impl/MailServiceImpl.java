@@ -2,10 +2,8 @@ package com.lpq.mail.service.impl;
 
 import com.lpq.mail.dao.MailAccountInfoDao;
 import com.lpq.mail.dao.MailInfoDao;
-import com.lpq.mail.entity.MailAccountInfo;
-import com.lpq.mail.entity.MailAccountInfoExample;
-import com.lpq.mail.entity.MailInfo;
-import com.lpq.mail.entity.MailInfoExample;
+import com.lpq.mail.dao.MailSendInfoDao;
+import com.lpq.mail.entity.*;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.MailService;
@@ -20,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.beans.Transient;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,24 +31,38 @@ public class MailServiceImpl implements MailService {
 
     private MailInfoDao mailInfoDao;
     private MailAccountInfoDao mailAccountInfoDao;
+    private MailSendInfoDao mailSendInfoDao;
 
     @Autowired
-    public MailServiceImpl(MailInfoDao mailInfoDao , MailAccountInfoDao mailAccountInfoDao) {
+    public MailServiceImpl(MailInfoDao mailInfoDao , MailAccountInfoDao mailAccountInfoDao,MailSendInfoDao mailSendInfoDao) {
         this.mailInfoDao = mailInfoDao;
         this.mailAccountInfoDao = mailAccountInfoDao ;
+        this.mailSendInfoDao = mailSendInfoDao ;
     }
 
     @Override
-    public String send(MailInfo mailInfo)throws GlobalException {
+    public String send(MailSendInfo mailInfo)throws GlobalException {
         SMTPUtil smtp = new SMTPUtil();
         MailAccountInfoExample example = new MailAccountInfoExample();
         example.createCriteria().andMailAccountEqualTo(mailInfo.getFrom()).andUserIdEqualTo(mailInfo.getUserId());
         List<MailAccountInfo> mailAccountInfo = mailAccountInfoDao.selectByExample(example);
+        mailInfo.setDate(new Date());
+        mailSendInfoDao.insert(mailInfo); //存储发件箱xg
         example.clear();
         if(mailAccountInfo.size()!=1){
             throw new GlobalException(CodeMessage.NO_MAILBOX);
         }
-        String success = smtp.SMTPserver(mailInfo,mailAccountInfo.get(0));
+        String to = mailInfo.getTo();
+        String success = null ;
+        if(to.contains(";")){
+            String[] tos = to.split(";");
+            for(String t : tos){
+                mailInfo.setTo(t);
+                success = smtp.SMTPserver(mailInfo,mailAccountInfo.get(0));
+            }
+        }else{
+            success = smtp.SMTPserver(mailInfo,mailAccountInfo.get(0));
+        }
         return success ;
     }
 
@@ -102,4 +116,17 @@ public class MailServiceImpl implements MailService {
             throw e;
         }
     }
+
+    @Override
+    public List<MailSendInfo> takeSendMail(Integer userId) throws GlobalException {
+        try{
+            MailSendInfoExample example = new MailSendInfoExample();
+            example.createCriteria().andUserIdEqualTo(userId);
+            List<MailSendInfo> mails = mailSendInfoDao.selectByExample(example);
+            return mails;
+        }catch (Exception e){
+            throw e;
+        }
+    }
+
 }

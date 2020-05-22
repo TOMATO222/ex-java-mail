@@ -2,13 +2,12 @@ package com.lpq.mail.controller;
 
 import com.auth0.jwt.JWT;
 import com.lpq.mail.annotations.UserLoginToken;
-import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
+import com.lpq.mail.entity.MailSendInfo;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.MailService;
-import com.lpq.mail.service.ManagerService;
 import com.lpq.mail.vo.MailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +34,7 @@ public class MailController {
     @UserLoginToken
     @PostMapping("/send")
     public BaseResult<Void> sendMail( MailVO mailVO , HttpServletRequest httpServletRequest){
-        MailInfo mailInfo = new MailInfo() ;
+        MailSendInfo mailInfo = new MailSendInfo() ;
         int userId = Integer.parseInt(JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0));
         mailInfo.setUserId(userId);
         mailInfo.setFrom(mailVO.getFrom());
