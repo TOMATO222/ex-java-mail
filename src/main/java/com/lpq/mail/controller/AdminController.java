@@ -22,6 +22,7 @@ import java.util.List;
  * @author Wei yuyaung
  * @date 2020.05.19 12:17
  */
+@CrossOrigin
 @RestController
 @RequestMapping("admin")
 public class AdminController {
@@ -40,7 +41,6 @@ public class AdminController {
         }
     }
 
-    @UserLoginToken
     @GetMapping("userManage/list")
     public BaseResult<List<UserInfo>> viewUserList(){
         try{
@@ -51,7 +51,6 @@ public class AdminController {
         }
     }
 
-    @UserLoginToken
     @PostMapping("userManage/changeState")
     public BaseResult<Void> changeUserState(@RequestBody ChangeStateVO changeStateVO, HttpServletRequest httpServletRequest){
         try{
@@ -66,7 +65,6 @@ public class AdminController {
         }
     }
 
-    @UserLoginToken
     @GetMapping("mailManage/list")
     public BaseResult<List<MailSendInfo>> viewMailList(){
         List<MailSendInfo> mails = managerService.loadAllMail() ;

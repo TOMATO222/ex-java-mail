@@ -66,9 +66,9 @@ public class UserController {
      */
     @UserLoginToken
     @PostMapping("change/nickname")
-    public BaseResult<Void> changeNickName(@RequestBody ModifyUserInfoVO modifyUserInfoVO, HttpServletRequest httpServletRequest){
+    public BaseResult<Void> changeNickName(ModifyUserInfoVO modifyUserInfoVO, HttpServletRequest httpServletRequest){
         try {
-            boolean success = userService.changeNickName(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getId()), modifyUserInfoVO);
+            boolean success = userService.changeNickName(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0)), modifyUserInfoVO);
             if(success){
                 return BaseResult.success(null);
             }else {
@@ -81,9 +81,9 @@ public class UserController {
 
     @UserLoginToken
     @PostMapping("change/password")
-    public BaseResult<Void>changePassword(@RequestBody ChangePasswordVO changePasswordVO , HttpServletRequest httpServletRequest){
+    public BaseResult<Void>changePassword(ChangePasswordVO changePasswordVO , HttpServletRequest httpServletRequest){
         try{
-            boolean success = userService.changePassword(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getId()),changePasswordVO);
+            boolean success = userService.changePassword(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0)),changePasswordVO);
             if(success){
                 return BaseResult.success(null);
             }else{
@@ -111,9 +111,9 @@ public class UserController {
 
     @UserLoginToken
     @PostMapping("addAccount")
-    public BaseResult<Void> addAccount(@RequestBody AddMailAccountVO addMailAccountVO , HttpServletRequest httpServletRequest){
+    public BaseResult<Void> addAccount( AddMailAccountVO addMailAccountVO , HttpServletRequest httpServletRequest){
         try{
-            boolean success = userService.addMailAccount(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getId()),addMailAccountVO);
+            boolean success = userService.addMailAccount(Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0)),addMailAccountVO);
             if(success){
                 return BaseResult.success(null);
             }else{
