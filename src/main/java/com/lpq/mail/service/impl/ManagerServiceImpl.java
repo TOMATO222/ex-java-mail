@@ -66,12 +66,18 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public boolean changeState(Integer userId,Integer state) throws GlobalException {
+    public boolean changeState(Integer userId) throws GlobalException {
         UserInfoExample example = new UserInfoExample();
         example.createCriteria().andIdEqualTo(userId);
-        UserInfo user=  new UserInfo() ;
-        user.setState(state);
-        userInfoDao.updateByExampleSelective(user,example);
+        List<UserInfo>  users = userInfoDao.selectByExample(example);
+        UserInfo user = users.get(0) ;
+        if(user.getState() == 1 ){
+            user.setState(0);
+            userInfoDao.updateByPrimaryKey(user);
+        }else{
+            user.setState(1);
+            userInfoDao.updateByPrimaryKey(user);
+        }
         return true;
     }
 }

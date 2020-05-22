@@ -54,7 +54,7 @@ public class AdminController {
     @PostMapping("userManage/changeState")
     public BaseResult<Void> changeUserState(@RequestBody ChangeStateVO changeStateVO, HttpServletRequest httpServletRequest){
         try{
-            boolean success = managerService.changeState(changeStateVO.getUserId(),changeStateVO.getState());
+            boolean success = managerService.changeState(changeStateVO.getUserId());
             if(success){
                 return BaseResult.success(null);
             }else{

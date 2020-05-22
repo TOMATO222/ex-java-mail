@@ -30,5 +30,5 @@ public interface ManagerService {
      * 创建时间：  2020/5/20
      * 注释：修改用户状态
      **/
-    boolean changeState(Integer userId , Integer state) throws GlobalException ;
+    boolean changeState(Integer userId) throws GlobalException ;
 }
