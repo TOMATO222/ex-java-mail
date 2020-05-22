@@ -24,7 +24,7 @@ public class ManagerServiceImpl implements ManagerService {
     private UserInfoDao userInfoDao;
     private MailSendInfoDao mailSendInfoDao ;
     @Autowired
-    public ManagerServiceImpl(UserInfoDao userInfoDao,MailSendInfo mailSendInfo){
+    public ManagerServiceImpl(UserInfoDao userInfoDao,MailSendInfoDao mailSendInfoDao){
         this.userInfoDao = userInfoDao ;
         this.mailSendInfoDao = mailSendInfoDao ;
     }
