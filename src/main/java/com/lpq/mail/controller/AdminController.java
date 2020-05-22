@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.lpq.mail.annotations.PassToken;
 import com.lpq.mail.annotations.UserLoginToken;
 import com.lpq.mail.dto.LoginDTO;
+import com.lpq.mail.entity.MailSendInfo;
 import com.lpq.mail.entity.UserInfo;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
@@ -63,5 +64,12 @@ public class AdminController {
         } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
         }
+    }
+
+    @UserLoginToken
+    @GetMapping("mailManage/list")
+    public BaseResult<List<MailSendInfo>> viewMailList(){
+        List<MailSendInfo> mails = managerService.loadAllMail() ;
+        return BaseResult.success(mails);
     }
 }

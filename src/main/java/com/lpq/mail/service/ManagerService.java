@@ -1,5 +1,6 @@
 package com.lpq.mail.service;
 
+import com.lpq.mail.entity.MailSendInfo;
 import com.lpq.mail.entity.ManagerInfo;
 import com.lpq.mail.entity.UserInfo;
 import com.lpq.mail.exception.GlobalException;
@@ -31,4 +32,10 @@ public interface ManagerService {
      * 注释：修改用户状态
      **/
     boolean changeState(Integer userId) throws GlobalException ;
+    /**
+     * 创建人：肖易安
+     * 创建时间：  2020/5/20
+     * 注释：查询邮件信息
+     **/
+    List<MailSendInfo> loadAllMail();
 }
