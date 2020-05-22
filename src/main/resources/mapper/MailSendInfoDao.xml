@@ -6,6 +6,7 @@
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="subject" jdbcType="VARCHAR" property="subject" />
     <result column="from" jdbcType="VARCHAR" property="from" />
+    <result column="to" jdbcType="VARCHAR" property="to" />
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="date" jdbcType="TIMESTAMP" property="date" />
   </resultMap>
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, subject, `from`, content, `date`
+    id, user_id, subject, `from`, `to`, content, `date`
   </sql>
   <select id="selectByExample" parameterType="com.lpq.mail.entity.MailSendInfoExample" resultMap="BaseResultMap">
     select
@@ -102,9 +103,11 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lpq.mail.entity.MailSendInfo" useGeneratedKeys="true">
     insert into mail_send_info (user_id, subject, `from`, 
-      content, `date`)
+      `to`, content, `date`
+      )
     values (#{userId,jdbcType=INTEGER}, #{subject,jdbcType=VARCHAR}, #{from,jdbcType=VARCHAR}, 
-      #{content,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP})
+      #{to,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lpq.mail.entity.MailSendInfo" useGeneratedKeys="true">
     insert into mail_send_info
@@ -117,6 +120,9 @@
       </if>
       <if test="from != null">
         `from`,
+      </if>
+      <if test="to != null">
+        `to`,
       </if>
       <if test="content != null">
         content,
@@ -134,6 +140,9 @@
       </if>
       <if test="from != null">
         #{from,jdbcType=VARCHAR},
+      </if>
+      <if test="to != null">
+        #{to,jdbcType=VARCHAR},
       </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
@@ -164,6 +173,9 @@
       <if test="record.from != null">
         `from` = #{record.from,jdbcType=VARCHAR},
       </if>
+      <if test="record.to != null">
+        `to` = #{record.to,jdbcType=VARCHAR},
+      </if>
       <if test="record.content != null">
         content = #{record.content,jdbcType=VARCHAR},
       </if>
@@ -181,6 +193,7 @@
       user_id = #{record.userId,jdbcType=INTEGER},
       subject = #{record.subject,jdbcType=VARCHAR},
       `from` = #{record.from,jdbcType=VARCHAR},
+      `to` = #{record.to,jdbcType=VARCHAR},
       content = #{record.content,jdbcType=VARCHAR},
       `date` = #{record.date,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -199,6 +212,9 @@
       <if test="from != null">
         `from` = #{from,jdbcType=VARCHAR},
       </if>
+      <if test="to != null">
+        `to` = #{to,jdbcType=VARCHAR},
+      </if>
       <if test="content != null">
         content = #{content,jdbcType=VARCHAR},
       </if>
@@ -213,6 +229,7 @@
     set user_id = #{userId,jdbcType=INTEGER},
       subject = #{subject,jdbcType=VARCHAR},
       `from` = #{from,jdbcType=VARCHAR},
+      `to` = #{to,jdbcType=VARCHAR},
       content = #{content,jdbcType=VARCHAR},
       `date` = #{date,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

@@ -18,6 +18,8 @@ public class MailSendInfo implements Serializable {
 
     private String from;
 
+    private String to;
+
     private String content;
 
     private Date date;

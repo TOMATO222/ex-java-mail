@@ -365,6 +365,76 @@ public class MailSendInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andToIsNull() {
+            addCriterion("`to` is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andToIsNotNull() {
+            addCriterion("`to` is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andToEqualTo(String value) {
+            addCriterion("`to` =", value, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToNotEqualTo(String value) {
+            addCriterion("`to` <>", value, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToGreaterThan(String value) {
+            addCriterion("`to` >", value, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToGreaterThanOrEqualTo(String value) {
+            addCriterion("`to` >=", value, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToLessThan(String value) {
+            addCriterion("`to` <", value, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToLessThanOrEqualTo(String value) {
+            addCriterion("`to` <=", value, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToLike(String value) {
+            addCriterion("`to` like", value, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToNotLike(String value) {
+            addCriterion("`to` not like", value, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToIn(List<String> values) {
+            addCriterion("`to` in", values, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToNotIn(List<String> values) {
+            addCriterion("`to` not in", values, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToBetween(String value1, String value2) {
+            addCriterion("`to` between", value1, value2, "to");
+            return (Criteria) this;
+        }
+
+        public Criteria andToNotBetween(String value1, String value2) {
+            addCriterion("`to` not between", value1, value2, "to");
+            return (Criteria) this;
+        }
+
         public Criteria andContentIsNull() {
             addCriterion("content is null");
             return (Criteria) this;
