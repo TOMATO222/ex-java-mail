@@ -47,7 +47,6 @@ public class MailServiceImpl implements MailService {
         example.createCriteria().andMailAccountEqualTo(mailInfo.getFrom()).andUserIdEqualTo(mailInfo.getUserId());
         List<MailAccountInfo> mailAccountInfo = mailAccountInfoDao.selectByExample(example);
         mailInfo.setDate(new Date());
-        mailSendInfoDao.insert(mailInfo); //存储发件箱xg
         example.clear();
         if(mailAccountInfo.size()!=1){
             throw new GlobalException(CodeMessage.NO_MAILBOX);
@@ -63,6 +62,7 @@ public class MailServiceImpl implements MailService {
         }else{
             success = smtp.SMTPserver(mailInfo,mailAccountInfo.get(0));
         }
+        mailSendInfoDao.insert(mailInfo);
         return success ;
     }
 
