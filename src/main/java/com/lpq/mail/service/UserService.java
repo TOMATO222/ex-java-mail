@@ -4,6 +4,7 @@ import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.entity.UserInfo;
 import com.lpq.mail.exception.GlobalException;
+import com.lpq.mail.vo.AddMailAccountVO;
 import com.lpq.mail.vo.ChangePasswordVO;
 import com.lpq.mail.vo.LoginVO;
 import com.lpq.mail.vo.ModifyUserInfoVO;
@@ -31,20 +32,6 @@ public interface UserService {
      * @return boolean
      */ 
     boolean changePassword(Integer userId, ChangePasswordVO changePasswordVO) throws GlobalException;
-
-
-
-    /**
-     * description: changeState <br>
-     * version: 1.0 <br>
-     * date: 2020.05.20 12:01 <br>
-     * author: Dominikyang <br>
-     * 
-     * @param userId
-     * @return boolean
-     */ 
-    boolean changeState(Integer userId);
-
 
 
     /**
@@ -82,4 +69,6 @@ public interface UserService {
      * @return java.util.List<com.lpq.mail.entity.MailAccountInfo>
      */ 
     List<MailAccountInfo> mailInfo(Integer userId) throws GlobalException;
+
+    boolean addMailAccount(Integer userId , AddMailAccountVO addMailAccountVO) throws GlobalException;
 }
