@@ -20,7 +20,6 @@
             </el-col>
           </el-form-item>
           <el-form-item label="服务启停" prop="name">
-
             <el-col :span="2">POP3</el-col>
             <el-col :span="10">
               <el-select v-model="ruleForm.server.pop3" placeholder="请选择">
@@ -91,7 +90,15 @@
                     if (valid) {
                         alert('submit!');
                         this.axios({
-
+                            method:'post',
+                            url:'https:localhost:8080/api/v1/system/change',
+                            data:JSON.stringify({
+                                pop3Port: this.ruleForm.port.pop3,
+                                pop3Status: this.ruleForm.server.pop3,
+                                smtpPort: this.ruleForm.port.pop3,
+                                smtpStatus: this.ruleForm.server.smtp,
+                            }),
+                            headers: {'Content-Type': 'application/json'},
                         })
                     } else {
                         console.log('error submit!!');
