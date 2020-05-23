@@ -76,7 +76,7 @@
             initTable(){
                 this.axios({
                     method:'get',
-                    url:'http://localhost:8080/api/v1/admin/mailManage/list'
+                    url:'http://192.168.43.1:8080/api/v1/admin/mailManage/list'
                 }).then(response =>{
                     console.log(response);
                     this.tableData = response.data.data;
