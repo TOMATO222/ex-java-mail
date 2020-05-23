@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService {
         mailAccountInfo.setUserId(userInfo.getId());
         mailAccountInfo.setMailAccount(userInfo.getUsername());
         mailAccountInfo.setMailPassword(userInfo.getPassword());
-        //todo smtp pop3是否需要填写？
+        //todo add smtp pop3 info
 
 
         UserRoleInfo userRoleInfo = new UserRoleInfo();

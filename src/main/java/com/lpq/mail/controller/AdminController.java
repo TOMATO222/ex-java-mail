@@ -77,6 +77,10 @@ public class AdminController {
     @PostMapping("userManage/del")
     public BaseResult<String> deleteUser(Integer userId){
         boolean b = userService.deleteUser(userId);
-        return BaseResult.success("删除成功");
+        if(b){
+            return BaseResult.success("删除成功");
+        }else{
+            return BaseResult.fail(CodeMessage.DEL_USER_FAILE);
+        }
     }
 }

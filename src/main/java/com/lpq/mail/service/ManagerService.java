@@ -5,6 +5,7 @@ import com.lpq.mail.entity.ManagerInfo;
 import com.lpq.mail.entity.UserInfo;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.vo.LoginVO;
+import com.lpq.mail.vo.SystemSettingsVO;
 
 import java.util.List;
 
