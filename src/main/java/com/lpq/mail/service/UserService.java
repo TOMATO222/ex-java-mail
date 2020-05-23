@@ -89,4 +89,15 @@ public interface UserService {
      * @return boolean
      */
     boolean addUser(RegisterVO registerVO) throws GlobalException;
+
+    /**
+     * description: 删除用户 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.23 13:17 <br>
+     * author: Dominikyang <br>
+     * 
+     * @param userId
+     * @return boolean
+     */ 
+    boolean deleteUser(Integer userId);
 }

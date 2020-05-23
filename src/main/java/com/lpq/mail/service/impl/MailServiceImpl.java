@@ -1,5 +1,6 @@
 package com.lpq.mail.service.impl;
 
+import com.lpq.mail.dao.LocalMailInfoDao;
 import com.lpq.mail.dao.MailAccountInfoDao;
 import com.lpq.mail.dao.MailInfoDao;
 import com.lpq.mail.dao.MailSendInfoDao;
@@ -32,38 +33,40 @@ public class MailServiceImpl implements MailService {
     private MailInfoDao mailInfoDao;
     private MailAccountInfoDao mailAccountInfoDao;
     private MailSendInfoDao mailSendInfoDao;
+    private LocalMailInfoDao localMailInfoDao;
 
     @Autowired
-    public MailServiceImpl(MailInfoDao mailInfoDao , MailAccountInfoDao mailAccountInfoDao,MailSendInfoDao mailSendInfoDao) {
+    public MailServiceImpl(MailInfoDao mailInfoDao, MailAccountInfoDao mailAccountInfoDao, MailSendInfoDao mailSendInfoDao, LocalMailInfoDao localMailInfoDao) {
         this.mailInfoDao = mailInfoDao;
-        this.mailAccountInfoDao = mailAccountInfoDao ;
-        this.mailSendInfoDao = mailSendInfoDao ;
+        this.mailAccountInfoDao = mailAccountInfoDao;
+        this.mailSendInfoDao = mailSendInfoDao;
+        this.localMailInfoDao = localMailInfoDao;
     }
 
     @Override
-    public String send(MailSendInfo mailInfo)throws GlobalException {
+    public String send(MailSendInfo mailInfo) throws GlobalException {
         SMTPUtil smtp = new SMTPUtil();
         MailAccountInfoExample example = new MailAccountInfoExample();
         example.createCriteria().andMailAccountEqualTo(mailInfo.getFrom()).andUserIdEqualTo(mailInfo.getUserId());
         List<MailAccountInfo> mailAccountInfo = mailAccountInfoDao.selectByExample(example);
         mailInfo.setDate(new Date());
         example.clear();
-        if(mailAccountInfo.size()!=1){
+        if (mailAccountInfo.size() != 1) {
             throw new GlobalException(CodeMessage.NO_MAILBOX);
         }
         String to = mailInfo.getTo();
-        String success = null ;
-        if(to.contains(";")){
+        String success = null;
+        if (to.contains(";")) {
             String[] tos = to.split(";");
-            for(String t : tos){
+            for (String t : tos) {
                 mailInfo.setTo(t);
-                success = smtp.SMTPserver(mailInfo,mailAccountInfo.get(0));
+                success = smtp.SMTPserver(mailInfo, mailAccountInfo.get(0));
             }
-        }else{
-            success = smtp.SMTPserver(mailInfo,mailAccountInfo.get(0));
+        } else {
+            success = smtp.SMTPserver(mailInfo, mailAccountInfo.get(0));
         }
         mailSendInfoDao.insert(mailInfo);
-        return success ;
+        return success;
     }
 
     @Override
@@ -75,19 +78,19 @@ public class MailServiceImpl implements MailService {
         mailInfoDao.deleteByExample(example);
         example.clear();
         //获取用户所有邮箱账号
-        MailAccountInfoExample accountInfoExample = new MailAccountInfoExample() ;
+        MailAccountInfoExample accountInfoExample = new MailAccountInfoExample();
         accountInfoExample.createCriteria().andUserIdEqualTo(userId);
-        List<MailAccountInfo> accountInfoList = null ;
+        List<MailAccountInfo> accountInfoList = null;
         accountInfoList = mailAccountInfoDao.selectByExample(accountInfoExample);
         accountInfoExample.clear();
         //没有邮箱账号直接返回
-        if(accountInfoList.isEmpty()){
+        if (accountInfoList.isEmpty()) {
             throw new GlobalException(CodeMessage.NO_MAILBOX);
         }
         //遍历邮箱账号
-        for (MailAccountInfo mailaccount: accountInfoList) {
+        for (MailAccountInfo mailaccount : accountInfoList) {
             POPUtil popUtil = new POPUtil();
-            try{
+            try {
                 List<MailInfo> mails = popUtil.POPServer(mailaccount);
                 for (MailInfo m : mails) {
                     mailInfoDao.insert(m);
@@ -102,16 +105,16 @@ public class MailServiceImpl implements MailService {
                 throw e;
             }
         }
-        return true ;
+        return true;
     }
 
     @Override
     public List<MailInfo> takeMail(Integer userId) throws GlobalException {
-        try{
+        try {
             MailInfoExample example = new MailInfoExample();
             example.createCriteria().andUserIdEqualTo(userId);
             List<MailInfo> mails = mailInfoDao.selectByExample(example);
-            return mails ;
+            return mails;
         } catch (Exception e) {
             throw e;
         }
@@ -119,14 +122,28 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public List<MailSendInfo> takeSendMail(Integer userId) throws GlobalException {
-        try{
+        try {
             MailSendInfoExample example = new MailSendInfoExample();
             example.createCriteria().andUserIdEqualTo(userId);
             List<MailSendInfo> mails = mailSendInfoDao.selectByExample(example);
             return mails;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
     }
 
+    @Transactional
+    @Override
+    public boolean deleteMail(Integer userId) {
+        MailInfoExample example = new MailInfoExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        int i = mailInfoDao.deleteByExample(example);
+        MailSendInfoExample mailSendInfoExample = new MailSendInfoExample();
+        mailSendInfoExample.createCriteria().andUserIdEqualTo(userId);
+        int i1 = mailSendInfoDao.deleteByExample(mailSendInfoExample);
+        LocalMailInfoExample localMailInfoExample = new LocalMailInfoExample();
+        localMailInfoExample.createCriteria().andUserIdEqualTo(userId);
+        int i2 = localMailInfoDao.deleteByExample(localMailInfoExample);
+        return i > 0 && i1 > 0 && i2 > 0;
+    }
 }

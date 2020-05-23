@@ -9,6 +9,7 @@ import com.lpq.mail.dao.UserRoleInfoDao;
 import com.lpq.mail.entity.*;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.CodeMessage;
+import com.lpq.mail.service.MailService;
 import com.lpq.mail.service.UserService;
 import com.lpq.mail.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,17 @@ public class UserServiceImpl implements UserService {
     private MailAccountInfoDao mailAccountInfoDao;
     private UserRoleInfoDao userRoleInfoDao;
 
+    private MailService mailService;
+
     //用户锁定状态，state = 1
     public static final int USER_LOCKED = 1;
 
     @Autowired
-    public UserServiceImpl(UserInfoDao userInfoDao, MailAccountInfoDao mailAccountInfoDao, UserRoleInfoDao userRoleInfoDao) {
+    public UserServiceImpl(UserInfoDao userInfoDao, MailAccountInfoDao mailAccountInfoDao, UserRoleInfoDao userRoleInfoDao, MailService mailService) {
         this.userInfoDao = userInfoDao;
         this.mailAccountInfoDao = mailAccountInfoDao;
         this.userRoleInfoDao = userRoleInfoDao;
+        this.mailService = mailService;
     }
 
     @Override
@@ -139,13 +143,13 @@ public class UserServiceImpl implements UserService {
         UserInfoExample example = new UserInfoExample();
         example.createCriteria().andUsernameEqualTo(registerVO.getUsername());
         List<UserInfo> userInfos = userInfoDao.selectByExample(example);
-        if(userInfos.size() > 0){
+        if (userInfos.size() > 0) {
             throw new GlobalException(CodeMessage.User_DOES_EXIST);
         }
         UserInfo userInfo = initUserInfo(registerVO.getUsername(), registerVO.getPassword());
         example.clear();
         int insertSelective = userInfoDao.insertSelective(userInfo);
-        if(!(insertSelective > 0)){
+        if (!(insertSelective > 0)) {
             throw new GlobalException(CodeMessage.ADD_NEW_USER_FAIL);
         }
         example.createCriteria().andUsernameEqualTo(registerVO.getUsername());
@@ -162,7 +166,7 @@ public class UserServiceImpl implements UserService {
         return userInfo;
     }
 
-    private boolean insertUserInfo(UserInfo userInfo){
+    private boolean insertUserInfo(UserInfo userInfo) {
         MailAccountInfoExample mailAccountInfoExample = new MailAccountInfoExample();
         UserRoleInfoExample roleInfoExample = new UserRoleInfoExample();
 
@@ -181,5 +185,16 @@ public class UserServiceImpl implements UserService {
         mailAccountInfoDao.insertSelective(mailAccountInfo);
         userRoleInfoDao.insertSelective(userRoleInfo);
         return true;
+    }
+
+
+    @Override
+    @Transactional(readOnly = false)
+    public boolean deleteUser(Integer userId) {
+        boolean b = mailService.deleteMail(userId);
+        MailAccountInfoExample mailAccountInfoExample = new MailAccountInfoExample();
+        mailAccountInfoExample.createCriteria().andUserIdEqualTo(userId);
+        int i = mailAccountInfoDao.deleteByExample(mailAccountInfoExample);
+        return i > 0 && b;
     }
 }

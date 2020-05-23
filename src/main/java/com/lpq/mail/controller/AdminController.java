@@ -10,6 +10,7 @@ import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.ManagerService;
+import com.lpq.mail.service.UserService;
 import com.lpq.mail.vo.ChangeStateVO;
 import com.lpq.mail.vo.LoginVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ import java.util.List;
 @RequestMapping("admin")
 public class AdminController {
     private ManagerService managerService ;
+    @Autowired
+    private UserService userService;
     @Autowired
     public AdminController(ManagerService managerService) {this.managerService = managerService; }
 
@@ -73,7 +76,7 @@ public class AdminController {
 
     @PostMapping("userManage/del")
     public BaseResult<String> deleteUser(Integer userId){
-        //todo
+        boolean b = userService.deleteUser(userId);
         return BaseResult.success("删除成功");
     }
 }

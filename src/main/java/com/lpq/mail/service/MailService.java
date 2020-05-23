@@ -31,4 +31,15 @@ public interface MailService {
     List<MailInfo> takeMail(Integer userId) throws GlobalException;
 
     List<MailSendInfo> takeSendMail(Integer userId) throws GlobalException;
+    
+    /**
+     * description: 删除邮件 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.23 13:18 <br>
+     * author: Dominikyang <br>
+     * 
+     * @param userId
+     * @return boolean
+     */ 
+    boolean deleteMail(Integer userId);
 }
