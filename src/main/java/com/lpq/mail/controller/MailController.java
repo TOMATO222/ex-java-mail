@@ -75,7 +75,7 @@ public class MailController {
             return BaseResult.fail(e.getCodeMessage());
         } catch (InterruptedException | ParseException | IOException e) {
             e.printStackTrace();
-            return BaseResult.fail(null);
+            return BaseResult.fail(CodeMessage.GET_MAIL_ERROR);
         }
 
     }

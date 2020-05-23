@@ -27,15 +27,16 @@ public class POPUtil {
             socket = new Socket(server,port);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            sendServer("pop " + mailAccountInfo.getMailAccount()+mailAccountInfo.getMailPassword(), out);
+            sendServer("pop " + mailAccountInfo.getMailAccount()+" "+mailAccountInfo.getMailPassword(), out);
             String line = null ;
             do{
                 line = getReturn(in);
-                if(line==null||line.length()<1){
+                if(!line.substring(0,3).equals("250")){
                     break ;
                 }
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.setUserId(mailAccountInfo.getUserId());
+                line = getReturn(in);
                 mailInfo.setFrom(line);
                 line = getReturn(in);
                 mailInfo.setTo(line);
@@ -44,11 +45,12 @@ public class POPUtil {
                 line = getReturn(in);
                 mailInfo.setContent(line);
                 line = getReturn(in);
-                SimpleDateFormat sdf1 = new SimpleDateFormat ("EEE dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
-                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf1 = new SimpleDateFormat ("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
                 Date date = sdf1.parse(line) ;
                 mailInfo.setDate(date);
-                mails.add(mailInfo);
+                if(!(mailInfo.getFrom() == null || mailInfo.getFrom().length()<1)){
+                    mails.add(mailInfo);
+                }
             }
             while(!line.equals("..."));
             socket.close();
@@ -100,8 +102,9 @@ public class POPUtil {
                 }else{
                     mailInfo.setContent(mailDecodeUtil.codeTransform(mailAnalyseUtil.bodyText(message),charset,"gbk"));
                 }
-
-                mails.add(mailInfo);
+                if(!(mailInfo.getFrom() == null || mailInfo.getFrom().length()<1)){
+                    mails.add(mailInfo);
+                }
             }
             socket.close();
             return mails ;

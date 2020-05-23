@@ -21,7 +21,7 @@
     <!-- 指定映射文件 -->
     <mappers>
         <!--方式一-->
-        <mapper resource="mapper/UserInfoDao.xml"/>
-        <mapper resource="mapper/MailInfoDao.xml"/>
+        <mapper resource="mapper/MailAccountInfoDao.xml"/>
+        <mapper resource="mapper/LocalMailInfoDao.xml"/>
     </mappers>
 </configuration>

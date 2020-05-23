@@ -1,6 +1,7 @@
 package com.lpq.mail.server;
 
 import com.lpq.mail.dao.LocalMailInfoDao;
+import com.lpq.mail.dao.MailAccountInfoDao;
 import com.lpq.mail.dao.MailInfoDao;
 import com.lpq.mail.dao.UserInfoDao;
 import com.lpq.mail.entity.*;
@@ -26,7 +27,7 @@ public class POPServerHandler implements Runnable {
     private SqlSessionFactory factory;
     private SqlSession sqlSession;
     private LocalMailInfoDao mailInfoDao ;
-    private UserInfoDao userInfoDao ;
+    private MailAccountInfoDao mailAccountInfoDao;
     private int userId ;
 
     public POPServerHandler(Socket socket) throws IOException {
@@ -36,7 +37,7 @@ public class POPServerHandler implements Runnable {
         factory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"));
         sqlSession = factory.openSession();
         this.mailInfoDao = sqlSession.getMapper(LocalMailInfoDao.class);
-        this.userInfoDao = sqlSession.getMapper(UserInfoDao.class);
+        this.mailAccountInfoDao = sqlSession.getMapper(MailAccountInfoDao.class);
     }
 
     @Override
@@ -44,21 +45,24 @@ public class POPServerHandler implements Runnable {
         try{
             String message = getRequest(in);
             if(message.contains("pop")) {
+                System.out.println(message);
                 String username = message.split(" ")[1];
                 String password = message.split(" ")[2];
-                UserInfoExample example = new UserInfoExample();
-                example.createCriteria().andUsernameEqualTo(username);
-                List<UserInfo> users = userInfoDao.selectByExample(example);
-                if (users.get(0).getPassword().equals(password)) {
+                MailAccountInfoExample example = new MailAccountInfoExample();
+                example.createCriteria().andMailAccountEqualTo(username);
+                List<MailAccountInfo> accounts = mailAccountInfoDao.selectByExample(example);
+                example.clear();
+                if (accounts.get(0).getMailPassword().equals(password)) {
                     sendMessage("250 登陆成功", out);
                 } else {
                     sendMessage("290 登陆失败", out);
                     return;
                 }
-                int userId = users.get(0).getId();
+                int userId = accounts.get(0).getUserId();
                 LocalMailInfoExample mailExample = new LocalMailInfoExample();
                 mailExample.createCriteria().andUserIdEqualTo(userId);
                 List<LocalMailInfo> mails = mailInfoDao.selectByExample(mailExample);
+                mailExample.clear();
                 for(LocalMailInfo mailInfo:mails){
                     sendMessage(mailInfo.getFrom() , out);
                     sendMessage(mailInfo.getTo() , out);
