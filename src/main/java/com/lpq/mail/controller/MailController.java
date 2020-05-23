@@ -44,7 +44,7 @@ public class MailController {
 
         try{
             String success = mailService.send(mailInfo);
-            if(success.equals("25")){
+            if(success.equals("250")){
                 return BaseResult.success(null) ;
             }else if(success.equals("554")){
                 return BaseResult.fail(CodeMessage.JUNK_MAIL);
@@ -73,13 +73,7 @@ public class MailController {
             }
         } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return BaseResult.fail(null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return BaseResult.fail(null);
-        } catch (IOException e) {
+        } catch (InterruptedException | ParseException | IOException e) {
             e.printStackTrace();
             return BaseResult.fail(null);
         }

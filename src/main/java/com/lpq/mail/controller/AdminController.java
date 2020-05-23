@@ -70,4 +70,10 @@ public class AdminController {
         List<MailSendInfo> mails = managerService.loadAllMail() ;
         return BaseResult.success(mails);
     }
+
+    @PostMapping("userManage/del")
+    public BaseResult<String> deleteUser(Integer userId){
+        //todo
+        return BaseResult.success("删除成功");
+    }
 }

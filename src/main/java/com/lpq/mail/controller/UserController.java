@@ -10,10 +10,7 @@ import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.UserService;
-import com.lpq.mail.vo.AddMailAccountVO;
-import com.lpq.mail.vo.ChangePasswordVO;
-import com.lpq.mail.vo.LoginVO;
-import com.lpq.mail.vo.ModifyUserInfoVO;
+import com.lpq.mail.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,6 +76,16 @@ public class UserController {
         }
     }
 
+    /**
+     * description: 修改密码 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.23 11:53 <br>
+     * author: Dominikyang <br>
+     *
+     * @param changePasswordVO
+ * @param httpServletRequest
+     * @return com.lpq.mail.result.BaseResult<java.lang.Void>
+     */
     @UserLoginToken
     @PostMapping("change/password")
     public BaseResult<Void>changePassword(ChangePasswordVO changePasswordVO , HttpServletRequest httpServletRequest){
@@ -95,6 +102,15 @@ public class UserController {
     }
 
 
+    /**
+     * description: 获取用户信息 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.23 11:53 <br>
+     * author: Dominikyang <br>
+     *
+     * @param httpServletRequest
+     * @return com.lpq.mail.result.BaseResult<java.util.List<com.lpq.mail.entity.MailAccountInfo>>
+     */
     @UserLoginToken
     @GetMapping("info/accounts")
     public BaseResult<List<MailAccountInfo>> userMailInfos(HttpServletRequest httpServletRequest){
@@ -109,6 +125,16 @@ public class UserController {
         }
     }
 
+    /**
+     * description: 添加邮箱 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.23 11:52 <br>
+     * author: Dominikyang <br>
+     * 
+     * @param addMailAccountVO
+ * @param httpServletRequest
+     * @return com.lpq.mail.result.BaseResult<java.lang.Void>
+     */ 
     @UserLoginToken
     @PostMapping("addAccount")
     public BaseResult<Void> addAccount( AddMailAccountVO addMailAccountVO , HttpServletRequest httpServletRequest){
@@ -120,6 +146,31 @@ public class UserController {
                 return BaseResult.fail(CodeMessage.INSERT_MAIL_ACCOUNT_ERROR);
             }
         } catch (GlobalException e) {
+            return BaseResult.fail(e.getCodeMessage());
+        }
+    }
+    
+    /**
+     * description: 用户注册 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.23 11:52 <br>
+     * author: Dominikyang <br>
+     * 
+     * @param registervo
+     * @return com.lpq.mail.result.BaseResult<java.lang.String>
+     */ 
+    @PassToken
+    @PostMapping("register")
+    public BaseResult<String> register(RegisterVO registervo){
+        try {
+            boolean b = userService.addUser(registervo);
+            if(b){
+                return BaseResult.success(null);
+            }else {
+                return BaseResult.fail(new CodeMessage(500,"账户初始化失败"));
+            }
+        } catch (GlobalException e) {
+            e.printStackTrace();
             return BaseResult.fail(e.getCodeMessage());
         }
     }

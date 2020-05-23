@@ -4,10 +4,7 @@ import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.entity.UserInfo;
 import com.lpq.mail.exception.GlobalException;
-import com.lpq.mail.vo.AddMailAccountVO;
-import com.lpq.mail.vo.ChangePasswordVO;
-import com.lpq.mail.vo.LoginVO;
-import com.lpq.mail.vo.ModifyUserInfoVO;
+import com.lpq.mail.vo.*;
 
 import java.util.List;
 
@@ -70,5 +67,26 @@ public interface UserService {
      */ 
     List<MailAccountInfo> mailInfo(Integer userId) throws GlobalException;
 
+    /**
+     * description: 添加邮箱 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.23 11:24 <br>
+     * author: Dominikyang <br>
+     *
+     * @param userId
+     * @param addMailAccountVO
+     * @return boolean
+     */
     boolean addMailAccount(Integer userId , AddMailAccountVO addMailAccountVO) throws GlobalException;
+
+    /**
+     * description: 新增用户 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.23 11:25 <br>
+     * author: Dominikyang <br>
+     *
+     * @param registerVO
+     * @return boolean
+     */
+    boolean addUser(RegisterVO registerVO) throws GlobalException;
 }

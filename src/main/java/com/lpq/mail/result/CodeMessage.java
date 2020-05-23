@@ -37,6 +37,8 @@ public class CodeMessage {
     public static final CodeMessage EMPTY_USER_MAIL_LIST = new CodeMessage(1007,"当前用户没有设置邮箱");
     public static final CodeMessage CHANGE_PASSWORD_FAIL = new CodeMessage(1008,"修改密码失败");
     public static final CodeMessage INSERT_MAIL_ACCOUNT_ERROR = new CodeMessage(1009,"邮箱插入数据库失败");
+    public static final CodeMessage User_DOES_EXIST = new CodeMessage(1010,"该用户名已被使用");
+    public static final CodeMessage ADD_NEW_USER_FAIL = new CodeMessage(1011,"新建用户失败");
 
     public static final CodeMessage NO_MAILBOX = new CodeMessage(2001,"没有绑定任何邮箱");
     public static final CodeMessage POP_ERROR = new CodeMessage(2002,"POP3服务运行错误");
