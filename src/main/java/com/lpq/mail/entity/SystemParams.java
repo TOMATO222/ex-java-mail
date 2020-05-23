@@ -1,28 +1,21 @@
 package com.lpq.mail.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
 /**
- * local_mail_info
+ * system_params
  * @author 
  */
 @Data
 public class SystemParams implements Serializable {
     private Integer id;
 
-    private Integer userId;
+    private String name;
 
-    private String subject;
+    private String value;
 
-    private String from;
-
-    private String to;
-
-    private String content;
-
-    private Date date;
+    private String description;
 
     private static final long serialVersionUID = 1L;
 }
