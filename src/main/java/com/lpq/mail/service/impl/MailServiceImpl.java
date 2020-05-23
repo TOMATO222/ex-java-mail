@@ -60,7 +60,11 @@ public class MailServiceImpl implements MailService {
             String[] tos = to.split(";");
             for (String t : tos) {
                 mailInfo.setTo(t);
-                success = smtp.SMTPserver(mailInfo, mailAccountInfo.get(0));
+                if(t.contains("@sbss")){
+                    success = smtp.MySmtpServer(mailInfo,mailAccountInfo.get(0));
+                }else{
+                    success = smtp.SMTPserver(mailInfo, mailAccountInfo.get(0));
+                }
             }
         } else {
             success = smtp.SMTPserver(mailInfo, mailAccountInfo.get(0));
@@ -90,19 +94,26 @@ public class MailServiceImpl implements MailService {
         //遍历邮箱账号
         for (MailAccountInfo mailaccount : accountInfoList) {
             POPUtil popUtil = new POPUtil();
-            try {
-                List<MailInfo> mails = popUtil.POPServer(mailaccount);
-                for (MailInfo m : mails) {
+            if(mailaccount.getMailAccount().contains("@sbss")){
+                List<MailInfo> mails = popUtil.MyPopServer(mailaccount);
+                for(MailInfo m : mails){
                     mailInfoDao.insert(m);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw e;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                throw e;
-            } catch (ParseException e) {
-                throw e;
+            }else{
+                try {
+                    List<MailInfo> mails = popUtil.POPServer(mailaccount);
+                    for (MailInfo m : mails) {
+                        mailInfoDao.insert(m);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw e;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    throw e;
+                } catch (ParseException e) {
+                    throw e;
+                }
             }
         }
         return true;

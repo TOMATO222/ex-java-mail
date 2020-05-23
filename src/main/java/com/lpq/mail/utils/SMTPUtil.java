@@ -3,6 +3,7 @@ package com.lpq.mail.utils;
 import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.entity.MailSendInfo;
+import com.lpq.mail.entity.UserInfoExample;
 import com.lpq.mail.exception.GlobalException;
 
 import java.io.*;
@@ -17,6 +18,34 @@ import java.util.Base64;
  * 注释：null
  **/
 public class SMTPUtil {
+    public String MySmtpServer(MailSendInfo mailSendInfo , MailAccountInfo mailAccountInfo ){
+        int port = Integer.valueOf(mailAccountInfo.getMailSmtpPort());
+        String server = mailAccountInfo.getMailSmtpAddress();
+        Socket client = null;
+        String re = null ;
+        try{
+            //建立连接与输入输出流
+            client = new Socket(server,port);
+            InputStream input = client.getInputStream();
+            BufferedReader socketin = new BufferedReader(new InputStreamReader(input));
+            OutputStream output = client.getOutputStream();
+            PrintWriter socketout = new PrintWriter(output , true);
+            //发送正文
+            socketout.println(mailAccountInfo.getUserId());
+            socketout.println(mailSendInfo.getFrom());
+            socketout.println(mailSendInfo.getTo());
+            socketout.println(mailSendInfo.getSubject());
+            socketout.println(mailSendInfo.getContent());
+            client.close();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+        return re;
+    }
     public String SMTPserver(MailSendInfo mailInfo, MailAccountInfo mailAccountInfo){
         int port = Integer.valueOf(mailAccountInfo.getMailSmtpPort());
         String server = mailAccountInfo.getMailSmtpAddress();

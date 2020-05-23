@@ -9,9 +9,8 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 创建人：肖易安
@@ -19,6 +18,52 @@ import java.util.StringTokenizer;
  * 注释：null
  **/
 public class POPUtil {
+    public List<MailInfo> MyPopServer(MailAccountInfo mailAccountInfo) throws IOException, ParseException {
+        List<MailInfo> mails = new ArrayList<MailInfo>() ;
+        int port = Integer.valueOf(mailAccountInfo.getMailPopPort());
+        String server = mailAccountInfo.getMailPopAddress();
+        Socket socket = null ;
+        try{
+            socket = new Socket(server,port);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            sendServer("pop " + mailAccountInfo.getMailAccount()+mailAccountInfo.getMailPassword(), out);
+            String line = null ;
+            do{
+                line = getReturn(in);
+                if(line==null||line.length()<1){
+                    break ;
+                }
+                MailInfo mailInfo = new MailInfo();
+                mailInfo.setUserId(mailAccountInfo.getUserId());
+                mailInfo.setFrom(line);
+                line = getReturn(in);
+                mailInfo.setTo(line);
+                line = getReturn(in);
+                mailInfo.setSubject(line);
+                line = getReturn(in);
+                mailInfo.setContent(line);
+                line = getReturn(in);
+                SimpleDateFormat sdf1 = new SimpleDateFormat ("EEE dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
+                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = sdf1.parse(line) ;
+                mailInfo.setDate(date);
+                mails.add(mailInfo);
+            }
+            while(!line.equals("..."));
+            socket.close();
+            return mails;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
     public List<MailInfo> POPServer(MailAccountInfo mailAccountInfo) throws IOException, InterruptedException, ParseException {
         List<MailInfo> mails = new ArrayList<MailInfo>();
@@ -93,6 +138,11 @@ public class POPUtil {
         out.newLine();
         out.flush();
         return getReturn(in);
+    }
+    public void sendServer(String str , BufferedWriter out) throws IOException {
+        out.write(str);
+        out.newLine();
+        out.flush();
     }
 
     public void user(String user,BufferedReader in,BufferedWriter out) throws IOException {
