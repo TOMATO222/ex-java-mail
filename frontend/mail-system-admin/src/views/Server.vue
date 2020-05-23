@@ -11,6 +11,7 @@
         <el-table
           :data="tableData"
           border
+          stripe
           height="750"
           style="width: 100%">
           <el-table-column
@@ -90,5 +91,8 @@
 </script>
 
 <style scoped>
+  .el-header{
+    background: cornflowerblue;
+  }
 
 </style>

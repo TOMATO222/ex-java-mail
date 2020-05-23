@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="self-title">
       <h1>邮件系统管理端</h1>
     </div>
 </template>
@@ -11,5 +11,5 @@
 </script>
 
 <style scoped>
-
+  .self-title{}
 </style>

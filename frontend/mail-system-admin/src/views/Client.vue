@@ -36,7 +36,7 @@
               <el-button
                 size="mini"
                 type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                @click="deleteUser(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -77,14 +77,16 @@
                     console.log(error);
                 })
             },
-            deleteUser:function () {
+            deleteUser:function (row,index) {
                 this.axios({
                     method:'post',
                     url:'http://localhost:8080/api/v1/admin/userManage/del',
                     data:Json.stringify({
-                        id:this.tableData.id
+                        id:this.tableData[index].id
                     }),
                     headers: {'Content-Type': 'application/json'}
+                }).then(response => {
+                    console.log(response)
                 })
             }
         }

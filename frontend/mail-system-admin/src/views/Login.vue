@@ -36,8 +36,22 @@
                 }
             };
         },
-        methods:{
-            submitForm:function () {
+        methods: {
+            submitForm: function () {
+                this.axios({
+                    method: 'post',
+                    url: 'http://localhost:8080/api/v1/admin/login',
+                    data: JSON.stringify({
+                        username: this.formLabelAlign.username,
+                        password: this.formLabelAlign.password
+                    }),
+                    headers: {'Content-Type': 'application/json'}
+                }).then(response =>{
+                    console.log(response);
+                    if(response.data.code === 200){
+                        this.$router.push({path:'/main'})
+                    }
+                })
 
             }
         }
@@ -58,6 +72,7 @@
     text-align: center;
     line-height: 200px;
   }
+
   .home-box {
     width: 600px;
     margin: 0 auto;
@@ -65,7 +80,8 @@
     display: block;
     color: #2c3e50;
   }
-  .el-button{
+
+  .el-button {
     width: 100%;
   }
 
