@@ -7,7 +7,10 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
+import globalVue from '@/global/global.vue'
 
+
+Vue.prototype.global = globalVue
 Vue.prototype.axios = axios;
 Vue.config.productionTip = false
 

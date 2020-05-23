@@ -73,9 +73,18 @@
                 }).then(response =>{
                     console.log(response);
                     this.tableData = response.data.data;
-                    console.log(this.port.ports);
                 }).catch(error => {
                     console.log(error);
+                })
+            },
+            deleteUser:function () {
+                this.axios({
+                    method:'post',
+                    url:'http://localhost:8080/api/v1/admin/userManage/del',
+                    data:Json.stringify({
+                        id:this.tableData.id
+                    }),
+                    headers: {'Content-Type': 'application/json'}
                 })
             }
         }
