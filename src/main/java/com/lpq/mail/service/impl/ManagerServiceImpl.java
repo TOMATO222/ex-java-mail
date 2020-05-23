@@ -25,13 +25,12 @@ import java.util.List;
 public class ManagerServiceImpl implements ManagerService {
     private UserInfoDao userInfoDao;
     private MailSendInfoDao mailSendInfoDao;
-    private SystemParamsDao systemParamsDao;
+
 
     @Autowired
-    public ManagerServiceImpl(UserInfoDao userInfoDao, MailSendInfoDao mailSendInfoDao, SystemParamsDao systemParamsDao) {
+    public ManagerServiceImpl(UserInfoDao userInfoDao, MailSendInfoDao mailSendInfoDao) {
         this.userInfoDao = userInfoDao;
         this.mailSendInfoDao = mailSendInfoDao;
-        this.systemParamsDao = systemParamsDao;
     }
 
     @Override

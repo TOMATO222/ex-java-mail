@@ -175,9 +175,10 @@ public class UserServiceImpl implements UserService {
         mailAccountInfo.setUserId(userInfo.getId());
         mailAccountInfo.setMailAccount(userInfo.getUsername());
         mailAccountInfo.setMailPassword(userInfo.getPassword());
-        //todo add smtp pop3 info
-
-
+        mailAccountInfo.setMailPopAddress("127.0.0.1");
+        mailAccountInfo.setMailPopPort("1524");
+        mailAccountInfo.setMailSmtpAddress("127.0.0.1");
+        mailAccountInfo.setMailSmtpPort("4251");
         UserRoleInfo userRoleInfo = new UserRoleInfo();
         userRoleInfo.setUserId(userInfo.getId());
         //默认为普通用户
