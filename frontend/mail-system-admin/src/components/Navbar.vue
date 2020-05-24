@@ -17,6 +17,8 @@
                     {name:'/client',navItem:'客户管理'},
                     {name:'/server',navItem:'邮件管理'},
                     {name:'/system',navItem:'系统参数设置'},
+                    {name:'/ip',navItem:'ip过滤控制'},
+                    {name:'/password',navItem:'管理员修改密码'},
                 ]
             };
         },

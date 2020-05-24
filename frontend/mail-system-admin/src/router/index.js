@@ -6,6 +6,8 @@ import Login from '@/views/Login'
 import Client from '@/views/Client'
 import System from '@/views/System'
 import Server from '@/views/Server'
+import Ip from '@/views/Ip'
+import Password from '@/views/Password'
 
 Vue.use(VueRouter);
 
@@ -35,6 +37,16 @@ export default new VueRouter({
       name:'System',
       path:'/System',
       component: System
+    },
+    {
+      name:'Ip',
+      path:'/Ip',
+      component: Ip
+    },
+    {
+      name:'Password',
+      path:'/Password',
+      component: Password
     },
   ]
 })
