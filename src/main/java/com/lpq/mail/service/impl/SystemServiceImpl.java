@@ -9,6 +9,8 @@ import com.lpq.mail.vo.SystemSettingsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 创建人：肖易安
  * 创建时间：  2020/5/23
@@ -59,5 +61,16 @@ public class SystemServiceImpl implements SystemService {
         systemParamsDao.updateByExample(systemParams,example);
         example.clear();
         return true;
+    }
+
+    @Override
+    public SystemSettingsVO getSettings() {
+        List<SystemParams> systemParams = systemParamsDao.selectByExample(null);
+        SystemSettingsVO systemSettingsVO = new SystemSettingsVO();
+        systemSettingsVO.setPop3Port(systemParams.get(2).getValue());
+        systemSettingsVO.setPop3Status(systemParams.get(0).getValue());
+        systemSettingsVO.setSmtpPort(systemParams.get(3).getValue());
+        systemSettingsVO.setSmtpStatus(systemParams.get(1).getValue());
+        return systemSettingsVO;
     }
 }

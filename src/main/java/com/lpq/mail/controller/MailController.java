@@ -79,9 +79,13 @@ public class MailController {
         }
     }
 
-    @GetMapping("/del")
-    public BaseResult<Void> delMail() {
-        boolean b = mailService.deleteMail(2);
-        return BaseResult.success(null);
+    @PostMapping("/details")
+    public BaseResult<MailInfo> mailDetails(Integer id){
+        MailInfo mailDetails = mailService.getMailDetails(id);
+        if(mailDetails == null){
+            return BaseResult.fail(new CodeMessage(500,"邮件不存在"));
+        }else {
+            return BaseResult.success(mailDetails);
+        }
     }
 }

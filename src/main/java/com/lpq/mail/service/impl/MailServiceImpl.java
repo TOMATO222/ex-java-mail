@@ -6,6 +6,7 @@ import com.lpq.mail.dao.MailInfoDao;
 import com.lpq.mail.dao.MailSendInfoDao;
 import com.lpq.mail.entity.*;
 import com.lpq.mail.exception.GlobalException;
+import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.MailService;
 import com.lpq.mail.utils.MailAnalyseUtil;
@@ -150,5 +151,10 @@ public class MailServiceImpl implements MailService {
         localMailInfoExample.createCriteria().andUserIdEqualTo(userId);
         int i2 = localMailInfoDao.deleteByExample(localMailInfoExample);
         return i > 0 && i1 > 0 && i2 > 0;
+    }
+
+    @Override
+    public MailInfo getMailDetails(Integer id) {
+        return mailInfoDao.selectByPrimaryKey(id);
     }
 }

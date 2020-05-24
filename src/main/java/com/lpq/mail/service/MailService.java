@@ -42,4 +42,16 @@ public interface MailService {
      * @return boolean
      */ 
     boolean deleteMail(Integer userId);
+
+    /**
+     * description: 获取邮件详情 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.24 17:37 <br>
+     * author: Dominikyang <br>
+     *
+     * @param id
+     * @return com.lpq.mail.entity.MailInfo
+     */
+    MailInfo getMailDetails(Integer id);
+
 }

@@ -48,10 +48,9 @@
                 }).then(response => {
                     console.log(response);
                     if (response.data.code === 200) {
-                        this.$router.push({path: '/main'})
+                        this.$router.push({path: '/client'})
                     }
                 })
-
             }
         }
     }

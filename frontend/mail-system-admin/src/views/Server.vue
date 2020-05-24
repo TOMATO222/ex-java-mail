@@ -53,6 +53,8 @@
 <script>
     import Header from "../components/Header";
     import Navbar from "../components/Navbar";
+    import Global from "../components/Global";
+
     export default {
         name: "Server",
         components: {Navbar, Header},
@@ -63,22 +65,22 @@
         },
         data() {
             return {
-                tableData:[{
-                    id:"",
-                    from:"",
-                    to:"",
-                    subject:"",
-                    content:"",
-                    date:"",
+                tableData: [{
+                    id: "",
+                    from: "",
+                    to: "",
+                    subject: "",
+                    content: "",
+                    date: "",
                 }]
             }
         },
-        methods:{
-            initTable(){
+        methods: {
+            initTable() {
                 this.axios({
-                    method:'get',
-                    url:'http://192.168.43.1:8080/api/v1/admin/mailManage/list'
-                }).then(response =>{
+                    method: 'get',
+                    url: Global.httpUrl + 'admin/mailManage/list'
+                }).then(response => {
                     console.log(response);
                     this.tableData = response.data.data;
                     console.log(this.port.ports);
@@ -89,10 +91,8 @@
         }
     }
 </script>
-
 <style scoped>
-  .el-header{
-    background: cornflowerblue;
+  .el-header {
   }
 
 </style>
