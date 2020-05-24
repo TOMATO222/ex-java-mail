@@ -109,13 +109,8 @@ public class MailServiceImpl implements MailService {
                             mailInfoDao.insert(m);
                         }
                     }
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException | ParseException e) {
                     e.printStackTrace();
-                    throw e;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    throw e;
-                } catch (ParseException e) {
                     throw e;
                 }
             }
@@ -147,7 +142,6 @@ public class MailServiceImpl implements MailService {
         }
     }
 
-    @Transactional
     @Override
     public boolean deleteMail(Integer userId) {
         MailInfoExample example = new MailInfoExample();

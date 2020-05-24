@@ -24,17 +24,17 @@ import java.util.List;
 @RestController
 @RequestMapping("mail")
 public class MailController {
-    private MailService mailService ;
+    private MailService mailService;
 
     @Autowired
-    public MailController(MailService mailService){
-        this.mailService = mailService ;
+    public MailController(MailService mailService) {
+        this.mailService = mailService;
     }
 
     @UserLoginToken
     @PostMapping("/send")
-    public BaseResult<Void> sendMail( MailVO mailVO , HttpServletRequest httpServletRequest){
-        MailSendInfo mailInfo = new MailSendInfo() ;
+    public BaseResult<Void> sendMail(MailVO mailVO, HttpServletRequest httpServletRequest) {
+        MailSendInfo mailInfo = new MailSendInfo();
         int userId = Integer.parseInt(JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0));
         mailInfo.setUserId(userId);
         mailInfo.setFrom(mailVO.getFrom());
@@ -42,13 +42,13 @@ public class MailController {
         mailInfo.setTo(mailVO.getTo());
         mailInfo.setSubject(mailVO.getSubject());
 
-        try{
+        try {
             String success = mailService.send(mailInfo);
-            if(success.equals("250")){
-                return BaseResult.success(null) ;
-            }else if(success.equals("554")){
+            if (success.equals("250")) {
+                return BaseResult.success(null);
+            } else if (success.equals("554")) {
                 return BaseResult.fail(CodeMessage.JUNK_MAIL);
-            }else {
+            } else {
                 return BaseResult.fail(CodeMessage.SEND_MAIL_ERROR);
             }
         } catch (GlobalException e) {
@@ -58,17 +58,17 @@ public class MailController {
 
     @UserLoginToken
     @GetMapping("/list")
-    public BaseResult<List<MailInfo>> receiveMail(HttpServletRequest httpServletRequest){
-        try{
+    public BaseResult<List<MailInfo>> receiveMail(HttpServletRequest httpServletRequest) {
+        try {
             int userId = Integer.parseInt(JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0));
             boolean success = mailService.receiveMail(userId);
-            if(success){
+            if (success) {
                 List<MailInfo> mails = mailService.takeMail(userId);
-                if(mails.size()<1){
+                if (mails.size() < 1) {
                     return BaseResult.success(null);
                 }
                 return BaseResult.success(mails);
-            }else{
+            } else {
                 return BaseResult.fail(CodeMessage.GET_MAIL_ERROR);
             }
         } catch (GlobalException e) {
@@ -77,6 +77,11 @@ public class MailController {
             e.printStackTrace();
             return BaseResult.fail(CodeMessage.GET_MAIL_ERROR);
         }
+    }
 
+    @GetMapping("/del")
+    public BaseResult<Void> delMail() {
+        boolean b = mailService.deleteMail(2);
+        return BaseResult.success(null);
     }
 }

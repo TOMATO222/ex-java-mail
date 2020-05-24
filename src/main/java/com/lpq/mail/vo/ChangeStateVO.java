@@ -9,5 +9,5 @@ import lombok.Data;
  **/
 @Data
 public class ChangeStateVO {
-    private int userId;
+    private Integer userId;
 }

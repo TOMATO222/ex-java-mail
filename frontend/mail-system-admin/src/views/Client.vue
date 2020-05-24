@@ -26,17 +26,25 @@
           <el-table-column
             prop="nickName"
             label="用户昵称"
-            >
+          >
+          </el-table-column>
+          <el-table-column
+            prop="state"
+            label="状态"
+            width="450"
+          >
           </el-table-column>
           <el-table-column label="操作" width="200">
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)">状态</el-button>
+                @click="changeState(scope.$index, scope.row)">状态
+              </el-button>
               <el-button
                 size="mini"
                 type="danger"
-                @click="deleteUser(scope.$index, scope.row)">删除</el-button>
+                @click="deleteUser(scope.$index, scope.row)">删除
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -46,8 +54,10 @@
 </template>
 
 <script>
-  import Navbar from "../components/Navbar";
-  import Header from "../components/Header";
+    import Navbar from "../components/Navbar";
+    import Header from "../components/Header";
+    import Global from "../components/Global";
+
     export default {
         name: "Client",
         components: {Header, Navbar},
@@ -59,36 +69,74 @@
         data() {
             return {
                 tableData: [{
-                    id: '-1',
-                    username: '没有获取到后端数据',
-                    nickName: '没有获取到后端数据'
-                }]
+                    id: '',
+                    username: '',
+                    nickName: '',
+                    state: ''
+                }],
             }
         },
-        methods:{
-            initData(){
+        methods: {
+            initData() {
                 this.axios({
-                    method:'get',
-                    url:'http://localhost:8080/api/v1/admin/userManage/list'
-                }).then(response =>{
+                    method: 'get',
+                    url: Global.httpUrl + 'admin/userManage/list'
+                }).then(response => {
                     console.log(response);
                     this.tableData = response.data.data;
                 }).catch(error => {
                     console.log(error);
                 })
             },
-            deleteUser:function (row,index) {
+            deleteUser(index, row) {
                 this.axios({
-                    method:'post',
-                    url:'http://localhost:8080/api/v1/admin/userManage/del',
-                    data:Json.stringify({
-                        id:this.tableData[index].id
+                    method: 'post',
+                    url: Global.httpUrl + 'admin/userManage/del',
+                    data: JSON.stringify({
+                        userId: row.id
                     }),
                     headers: {'Content-Type': 'application/json'}
                 }).then(response => {
-                    console.log(response)
+                    if (response.data.code === 200) {
+                        this.$notify({
+                            title: '成功',
+                            message: response.data.data,
+                            type: 'success'
+                        });
+                        this.initData();
+                    } else {
+                        this.$notify.error({
+                            title: '成功',
+                            message: response.data.message,
+                        });
+                    }
                 })
-            }
+            },
+            changeState(index, row) {
+                this.axios({
+                    method: 'post',
+                    url: Global.httpUrl + 'admin/userManage/changeState',
+                    data: JSON.stringify({
+                        userId: row.id
+                    }),
+                    headers: {'Content-Type': 'application/json'}
+                }).then(response => {
+                    if (response.data.code === 200) {
+                        this.$notify({
+                            title: '成功',
+                            message: response.data.data,
+                            type: 'success'
+                        });
+                        this.initData();
+                    } else {
+                        this.$notify.error({
+                            title: '成功',
+                            message: response.data.message,
+                        });
+                    }
+                })
+                console.log(row.id)
+            },
         }
     }
 </script>

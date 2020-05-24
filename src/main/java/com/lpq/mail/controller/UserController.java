@@ -5,7 +5,6 @@ import com.lpq.mail.annotations.PassToken;
 import com.lpq.mail.annotations.UserLoginToken;
 import com.lpq.mail.dto.LoginDTO;
 import com.lpq.mail.entity.MailAccountInfo;
-import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;

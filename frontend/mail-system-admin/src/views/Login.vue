@@ -1,26 +1,25 @@
 <template>
-  <el-container>
-    <div class="home-box" style="border-radius: 4px">
+  <el-container class="home-box">
       <el-header>
         <h1>登录</h1>
       </el-header>
       <el-main>
-        <el-form :label-position="left" label-width="80px" :model="formLabelAlign">
-          <el-form-item label="账号">
-            <el-input v-model="formLabelAlign.username"></el-input>
-          </el-form-item>
-          <el-form-item label="密码">
-            <el-input v-model="formLabelAlign.password" type="password"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-col :span="12" :offset="4">
-              <el-button type="primary" @click="submitForm('formLabelAlign')">登录</el-button>
-            </el-col>
-          </el-form-item>
-        </el-form>
+        <el-card>
+          <el-form :label-position="left" label-width="80px" :model="formLabelAlign">
+            <el-form-item label="账号">
+              <el-input v-model="formLabelAlign.username"></el-input>
+            </el-form-item>
+            <el-form-item label="密码">
+              <el-input v-model="formLabelAlign.password" type="password"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-col :span="12" :offset="4">
+                <el-button type="primary" @click="submitForm('formLabelAlign')">登录</el-button>
+              </el-col>
+            </el-form-item>
+          </el-form>
+        </el-card>
       </el-main>
-    </div>
-
   </el-container>
 </template>
 
@@ -46,10 +45,10 @@
                         password: this.formLabelAlign.password
                     }),
                     headers: {'Content-Type': 'application/json'}
-                }).then(response =>{
+                }).then(response => {
                     console.log(response);
-                    if(response.data.code === 200){
-                        this.$router.push({path:'/main'})
+                    if (response.data.code === 200) {
+                        this.$router.push({path: '/main'})
                     }
                 })
 
@@ -67,7 +66,7 @@
   }
 
   .el-main {
-    background: rgba(220, 223, 230, 0.8);
+    background: rgba(233, 238, 243, 0.8);
     color: #333;
     text-align: center;
     line-height: 200px;
@@ -78,7 +77,7 @@
     margin: 0 auto;
     padding: 200px 20px 20px 20px;
     display: block;
-    color: #2c3e50;
+    color: #e9eef3;
   }
 
   .el-button {

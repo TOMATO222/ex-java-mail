@@ -196,6 +196,7 @@ public class UserServiceImpl implements UserService {
         MailAccountInfoExample mailAccountInfoExample = new MailAccountInfoExample();
         mailAccountInfoExample.createCriteria().andUserIdEqualTo(userId);
         int i = mailAccountInfoDao.deleteByExample(mailAccountInfoExample);
-        return i > 0 && b;
+        int i1 = userInfoDao.deleteByPrimaryKey(userId);
+        return true;
     }
 }

@@ -12,6 +12,7 @@ import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.ManagerService;
 import com.lpq.mail.service.UserService;
 import com.lpq.mail.vo.ChangeStateVO;
+import com.lpq.mail.vo.DeleteUserVO;
 import com.lpq.mail.vo.LoginVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,15 @@ public class AdminController {
     @Autowired
     public AdminController(ManagerService managerService) {this.managerService = managerService; }
 
+    /**
+     * description: 管理员登录 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.24 13:41 <br>
+     * author: Dominikyang <br>
+     * 
+     * @param loginVO
+     * @return com.lpq.mail.result.BaseResult<com.lpq.mail.dto.LoginDTO>
+     */ 
     @PassToken
     @PostMapping("login")
     public BaseResult<LoginDTO> login(@RequestBody LoginVO loginVO){
@@ -44,6 +54,15 @@ public class AdminController {
         }
     }
 
+    /**
+     * description: 用户列表 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.24 13:34 <br>
+     * author: Dominikyang <br>
+     * 
+     * @param 
+     * @return com.lpq.mail.result.BaseResult<java.util.List<com.lpq.mail.entity.UserInfo>>
+     */ 
     @GetMapping("userManage/list")
     public BaseResult<List<UserInfo>> viewUserList(){
         try{
@@ -54,12 +73,22 @@ public class AdminController {
         }
     }
 
+    /**
+     * description: 用户账户加锁解锁 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.24 13:33 <br>
+     * author: Dominikyang <br>
+     * 
+     * @param changeStateVO
+     * @param httpServletRequest
+     * @return com.lpq.mail.result.BaseResult<java.lang.Void>
+     */ 
     @PostMapping("userManage/changeState")
-    public BaseResult<Void> changeUserState(@RequestBody ChangeStateVO changeStateVO, HttpServletRequest httpServletRequest){
+    public BaseResult<String> changeUserState(@RequestBody ChangeStateVO changeStateVO, HttpServletRequest httpServletRequest){
         try{
             boolean success = managerService.changeState(changeStateVO.getUserId());
             if(success){
-                return BaseResult.success(null);
+                return BaseResult.success("修改成功");
             }else{
                 return BaseResult.fail(CodeMessage.CHANGE_STATE_ERROR);
             }
@@ -68,15 +97,33 @@ public class AdminController {
         }
     }
 
+    /**
+     * description: 获取发件箱列表 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.24 13:33 <br>
+     * author: Dominikyang <br>
+     * 
+     * @param 
+     * @return com.lpq.mail.result.BaseResult<java.util.List<com.lpq.mail.entity.MailSendInfo>>
+     */ 
     @GetMapping("mailManage/list")
     public BaseResult<List<MailSendInfo>> viewMailList(){
         List<MailSendInfo> mails = managerService.loadAllMail() ;
         return BaseResult.success(mails);
     }
 
+    /**
+     * description: 删除用户 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.24 13:33 <br>
+     * author: Dominikyang <br>
+     * 
+     * @param deleteUserVO
+     * @return com.lpq.mail.result.BaseResult<java.lang.String>
+     */ 
     @PostMapping("userManage/del")
-    public BaseResult<String> deleteUser(Integer userId){
-        boolean b = userService.deleteUser(userId);
+    public BaseResult<String> deleteUser(@RequestBody DeleteUserVO deleteUserVO){
+        boolean b = userService.deleteUser(deleteUserVO.getUserId());
         if(b){
             return BaseResult.success("删除成功");
         }else{
