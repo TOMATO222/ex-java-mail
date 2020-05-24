@@ -152,7 +152,13 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.lpq.mail.entity.MailInfoExample" resultType="java.lang.Long">
+    <insert id="insertByList" parameterType="com.lpq.mail.entity.MailInfo">
+      insert into mail_info (user_id, subject, `from`,`to`, content, `date`) values
+      <foreach collection="list" item="m" separator=",">
+        (#{m.userId},#{m.subject},#{m.from},#{m.to},#{m.content},#{m.date})
+      </foreach>
+    </insert>
+    <select id="countByExample" parameterType="com.lpq.mail.entity.MailInfoExample" resultType="java.lang.Long">
     select count(*) from mail_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

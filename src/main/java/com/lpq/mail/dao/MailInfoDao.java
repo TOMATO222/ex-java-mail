@@ -16,6 +16,8 @@ public interface MailInfoDao {
 
     int insertSelective(MailInfo record);
 
+    int insertByList(List<MailInfo> mails);
+
     List<MailInfo> selectByExample(MailInfoExample example);
 
     MailInfo selectByPrimaryKey(Integer id);

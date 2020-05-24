@@ -97,17 +97,13 @@ public class MailServiceImpl implements MailService {
             if(mailaccount.getMailAccount().contains("@sbss")){
                 List<MailInfo> mails = popUtil.MyPopServer(mailaccount);
                 if(mails.size()>0){
-                    for(MailInfo m : mails){
-                        mailInfoDao.insert(m);
-                    }
+                    mailInfoDao.insertByList(mails);
                 }
             }else{
                 try {
                     List<MailInfo> mails = popUtil.POPServer(mailaccount);
                     if(mails.size()>0){
-                        for(MailInfo m : mails){
-                            mailInfoDao.insert(m);
-                        }
+                        mailInfoDao.insertByList(mails);
                     }
                 } catch (IOException | InterruptedException | ParseException e) {
                     e.printStackTrace();
