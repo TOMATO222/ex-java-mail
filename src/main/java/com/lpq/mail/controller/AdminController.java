@@ -234,7 +234,7 @@ public class AdminController {
     @PostMapping("ip/del")
     public BaseResult<String> ipDel(@RequestBody IpInfo ipInfo){
         boolean delete = ipService.delete(ipInfo);
-        if(add){
+        if(delete){
             return BaseResult.success("删除规则成功");
         }else {
             return BaseResult.fail(new CodeMessage(500,"删除规则失败"));
