@@ -60,16 +60,22 @@ public class MailServiceImpl implements MailService {
             String[] tos = to.split(";");
             for (String t : tos) {
                 mailInfo.setTo(t);
-                if(t.contains("@sbss")){
+                if(mailInfo.getFrom().contains("@sbss")){
                     success = smtp.MySmtpServer(mailInfo,mailAccountInfo.get(0));
                 }else{
                     success = smtp.SMTPserver(mailInfo, mailAccountInfo.get(0));
                 }
             }
         } else {
-            success = smtp.SMTPserver(mailInfo, mailAccountInfo.get(0));
+            if(mailInfo.getFrom().contains("@sbss")){
+                success = smtp.MySmtpServer(mailInfo,mailAccountInfo.get(0));
+            }else{
+                success = smtp.SMTPserver(mailInfo, mailAccountInfo.get(0));
+            }
         }
-        mailSendInfoDao.insert(mailInfo);
+        if(success.equals("250")){
+            mailSendInfoDao.insert(mailInfo);
+        }
         return success;
     }
 

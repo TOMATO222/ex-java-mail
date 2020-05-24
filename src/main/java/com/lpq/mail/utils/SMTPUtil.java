@@ -36,6 +36,7 @@ public class SMTPUtil {
             socketout.println(mailSendInfo.getTo());
             socketout.println(mailSendInfo.getSubject());
             socketout.println(mailSendInfo.getContent());
+            re = socketin.readLine().substring(0,3);
             client.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();

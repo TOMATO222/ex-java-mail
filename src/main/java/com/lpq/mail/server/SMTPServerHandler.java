@@ -4,6 +4,7 @@ import com.lpq.mail.dao.LocalMailInfoDao;
 import com.lpq.mail.dao.MailInfoDao;
 import com.lpq.mail.dao.UserInfoDao;
 import com.lpq.mail.entity.*;
+import lombok.SneakyThrows;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -26,7 +27,6 @@ public class SMTPServerHandler implements Runnable {
     private SqlSessionFactory factory;
     private SqlSession sqlSession;
     private LocalMailInfoDao mailInfoDao ;
-    private UserInfoDao userInfoDao ;
 
     public SMTPServerHandler(Socket socket) throws IOException {
         this.socket = socket ;
@@ -35,8 +35,8 @@ public class SMTPServerHandler implements Runnable {
         factory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"));
         sqlSession = factory.openSession();
         this.mailInfoDao = sqlSession.getMapper(LocalMailInfoDao.class);
-        this.userInfoDao = sqlSession.getMapper(UserInfoDao.class);
     }
+    @SneakyThrows
     @Override
     public void run() {
         try{
@@ -49,10 +49,12 @@ public class SMTPServerHandler implements Runnable {
             mailInfo.setDate(new Date());
             int userId = Integer.parseInt(userID);
             mailInfo.setUserId(userId);
+            System.out.println(mailInfo.toString());
             mailInfoDao.insert(mailInfo);
             sendMessage("250 发送成功" , out);
         } catch (IOException e) {
             e.printStackTrace();
+            sendMessage("554 发送失败" , out);
         }finally {
             this.socket = null ;
             this.in = null ;
