@@ -123,4 +123,15 @@ public interface UserService {
      * @return boolean
      */
     boolean changeRole(Integer userId) throws GlobalException;
+
+    /**
+     * description: 修改用户基本信息 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 1:59 <br>
+     * author: Dominikyang <br>
+     *
+     * @param userInfo
+     * @return boolean
+     */
+    boolean modifyUserMessage(UserInfo userInfo);
 }

@@ -234,4 +234,9 @@ public class UserServiceImpl implements UserService {
         int i = userRoleInfoDao.updateByPrimaryKey(userRoleInfos.get(0));
         return i > 0;
     }
+
+    @Override
+    public boolean modifyUserMessage(UserInfo userInfo) {
+        return userInfoDao.updateByPrimaryKeySelective(userInfo) > 0;
+    }
 }

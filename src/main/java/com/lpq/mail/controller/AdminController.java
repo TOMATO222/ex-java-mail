@@ -2,11 +2,13 @@ package com.lpq.mail.controller;
 
 import com.lpq.mail.annotations.PassToken;
 import com.lpq.mail.dto.LoginDTO;
+import com.lpq.mail.entity.IpInfo;
 import com.lpq.mail.entity.MailSendInfo;
 import com.lpq.mail.entity.UserInfo;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
+import com.lpq.mail.service.IpService;
 import com.lpq.mail.service.ManagerService;
 import com.lpq.mail.service.UserService;
 import com.lpq.mail.vo.*;
@@ -25,10 +27,16 @@ import java.util.List;
 @RequestMapping("admin")
 public class AdminController {
     private ManagerService managerService ;
-    @Autowired
     private UserService userService;
+    private IpService ipService;
+
+
     @Autowired
-    public AdminController(ManagerService managerService) {this.managerService = managerService; }
+    public AdminController(ManagerService managerService, UserService userService, IpService ipService) {
+        this.managerService = managerService;
+        this.userService = userService;
+        this.ipService = ipService;
+    }
 
     /**
      * description: 管理员登录 <br>
@@ -159,7 +167,7 @@ public class AdminController {
     }
 
 
-    @PostMapping("change/password")
+    @PostMapping("userManage/password")
     public BaseResult<String> changePassword(@RequestBody AdminChangePwdVO adminChangePwdVO){
         try {
             boolean b = userService.changePassword(adminChangePwdVO.getUserId(), new ChangePasswordVO(adminChangePwdVO.getOldPassword(), adminChangePwdVO.getNewPassword()));
@@ -172,8 +180,64 @@ public class AdminController {
             e.printStackTrace();
             return BaseResult.fail(e.getCodeMessage());
         }
-
-
+    }
+    
+    /**
+     * description: 修改用户信息 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 2:04 <br>
+     * author: Dominikyang <br>
+     * 
+     * @param userInfo
+     * @return com.lpq.mail.result.BaseResult<java.lang.String>
+     */ 
+    @PostMapping("userManage/info")
+    public BaseResult<String> modifyInfos(@RequestBody UserInfo userInfo){
+        boolean b = userService.modifyUserMessage(userInfo);
+        if(b){
+            return BaseResult.success("修改成功");
+        }else {
+            return BaseResult.fail(new CodeMessage(500,"修改失败"));
+        }
     }
 
+    /**
+     * description: 获取ip列表 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 2:22 <br>
+     * author: Dominikyang <br>
+     *
+     * @param
+     * @return com.lpq.mail.result.BaseResult<java.util.List<com.lpq.mail.entity.IpInfo>>
+     */
+    @GetMapping("ip/list")
+    public BaseResult<List<IpInfo>> ipInfoList(){
+        List<IpInfo> select = ipService.select();
+        return BaseResult.success(select);
+    }
+
+    @PostMapping("ip/add")
+    public BaseResult<String> ipAdd(@RequestBody IpInfo ipInfo){
+        try {
+            boolean add = ipService.add(ipInfo);
+            if(add){
+                return BaseResult.success("添加规则成功");
+            }else {
+                return BaseResult.fail(new CodeMessage(500,"添加规则失败"));
+            }
+        } catch (GlobalException e) {
+            e.printStackTrace();
+            return BaseResult.fail(e.getCodeMessage());
+        }
+    }
+
+    @PostMapping("ip/del")
+    public BaseResult<String> ipDel(@RequestBody IpInfo ipInfo){
+        boolean delete = ipService.delete(ipInfo);
+        if(add){
+            return BaseResult.success("删除规则成功");
+        }else {
+            return BaseResult.fail(new CodeMessage(500,"删除规则失败"));
+        }
+    }
 }
