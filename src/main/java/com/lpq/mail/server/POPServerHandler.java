@@ -63,14 +63,18 @@ public class POPServerHandler implements Runnable {
                 mailExample.createCriteria().andUserIdEqualTo(userId);
                 List<LocalMailInfo> mails = mailInfoDao.selectByExample(mailExample);
                 mailExample.clear();
-                for(LocalMailInfo mailInfo:mails){
-                    sendMessage(mailInfo.getFrom() , out);
-                    sendMessage(mailInfo.getTo() , out);
-                    sendMessage(mailInfo.getSubject() , out);
-                    sendMessage(mailInfo.getContent() , out);
-                    sendMessage(mailInfo.getDate().toString() , out);
+                for(int i = 0 ; i < mails.size() ; i++ ){
+                    sendMessage(mails.get(i).getFrom() , out);
+                    sendMessage(mails.get(i).getTo() , out);
+                    sendMessage(mails.get(i).getSubject() , out);
+                    sendMessage(mails.get(i).getContent() , out);
+                    sendMessage(mails.get(i).getDate().toString() , out);
+                    if(i==mails.size()-1){
+                        sendMessage("..." , out);
+                    }else{
+                        sendMessage(".",out);
+                    }
                 }
-                sendMessage("..." , out);
             }
         } catch (IOException e) {
             e.printStackTrace();

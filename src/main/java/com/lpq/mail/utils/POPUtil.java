@@ -3,8 +3,16 @@ package com.lpq.mail.utils;
 import com.lpq.mail.dao.MailInfoDao;
 import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
+import com.lpq.mail.exception.GlobalException;
+import com.lpq.mail.result.CodeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
+import javax.swing.text.AbstractDocument;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -18,7 +26,7 @@ import java.util.*;
  * 注释：null
  **/
 public class POPUtil {
-    public List<MailInfo> MyPopServer(MailAccountInfo mailAccountInfo) throws IOException, ParseException {
+    public List<MailInfo> MyPopServer(MailAccountInfo mailAccountInfo) throws GlobalException, IOException, ParseException {
         List<MailInfo> mails = new ArrayList<MailInfo>() ;
         int port = Integer.valueOf(mailAccountInfo.getMailPopPort());
         String server = mailAccountInfo.getMailPopAddress();
@@ -29,11 +37,11 @@ public class POPUtil {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             sendServer("pop " + mailAccountInfo.getMailAccount()+" "+mailAccountInfo.getMailPassword(), out);
             String line = null ;
+            line = getReturn(in);
+            if(!line.substring(0,3).equals("250")){
+                throw new GlobalException(CodeMessage.GET_MAIL_ERROR);
+            }
             do{
-                line = getReturn(in);
-                if(!line.substring(0,3).equals("250")){
-                    break ;
-                }
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.setUserId(mailAccountInfo.getUserId());
                 line = getReturn(in);
@@ -51,8 +59,9 @@ public class POPUtil {
                 if(!(mailInfo.getFrom() == null || mailInfo.getFrom().length()<1)){
                     mails.add(mailInfo);
                 }
+                line = getReturn(in);
             }
-            while(!"...".equals(line));
+            while(line.equals("."));
             socket.close();
             return mails;
         } catch (UnknownHostException e) {
@@ -67,58 +76,82 @@ public class POPUtil {
         }
     }
 
-    public List<MailInfo> POPServer(MailAccountInfo mailAccountInfo) throws IOException, InterruptedException, ParseException {
+    public List<MailInfo> POPServer(MailAccountInfo mailAccountInfo) throws MessagingException {
         List<MailInfo> mails = new ArrayList<>();
-        int port = Integer.valueOf(mailAccountInfo.getMailPopPort());
-        String server = mailAccountInfo.getMailPopAddress();
-        Socket socket = null ;
-        //定义工具
-        MailAnalyseUtil mailAnalyseUtil = new MailAnalyseUtil();
-        MailDecodeUtil mailDecodeUtil = new MailDecodeUtil();
         try{
-            socket = new Socket(server,port);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            user(mailAccountInfo.getMailAccount(),in,out);
-            pass(mailAccountInfo.getMailPassword(),in,out);
-            int mailNum = stat(in,out);
-            list(in,out);
-            for(int i=1 ; i<=mailNum ;i++){
-                String message = retr(i,in,out);
+            String address = mailAccountInfo.getMailAccount();
+            String[] split = mailAccountInfo.getMailAccount().split("@");
+            String user = split[0] ;
+            String password = mailAccountInfo.getMailPassword();
+            Properties props = new Properties();
+            props.setProperty("mail.store.protocol" , "pop3");
+            props.setProperty("mail.pop3.host" , mailAccountInfo.getMailPopAddress());
+            props.setProperty("mail.pop3.port" , mailAccountInfo.getMailPopPort());
+            Session session = Session.getInstance(props);
+            Store store = session.getStore("pop3");
+            store.connect(address , password);
+            Folder folder = store.getFolder("INBOX");
+            folder.open(Folder.READ_ONLY);
+            Message[] message = folder.getMessages();
+            if(message==null||message.length<1){
+                return null ;
+            }
+            for (int i=0 ; i<message.length ; i++) {
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.setUserId(mailAccountInfo.getUserId());
-                mailInfo.setFrom(mailAnalyseUtil.from(message));
-                mailInfo.setTo(mailAnalyseUtil.to(message));
-                mailInfo.setDate(mailAnalyseUtil.date(message));
-                String charset = mailAnalyseUtil.subjectCharset(message);
-                if(charset == null || charset.length()==0){
-                    mailInfo.setSubject(mailAnalyseUtil.subjectText(message));
-                }else{
-                    mailInfo.setSubject(mailDecodeUtil.codeTransform(mailAnalyseUtil.subjectText(message),charset,"gbk"));
-                }
-                charset = mailAnalyseUtil.bodyCharset(message);
-                if(charset == null || charset.length()==0){
-                    mailInfo.setContent(mailAnalyseUtil.bodyText(message));
-                }else{
-                    mailInfo.setContent(mailDecodeUtil.codeTransform(mailAnalyseUtil.bodyText(message),charset,"gbk"));
-                }
-                if(!(mailInfo.getFrom() == null || mailInfo.getFrom().length()<1)){
-                    mails.add(mailInfo);
-                }
+                mailInfo.setTo(mailAccountInfo.getMailAccount());
+                MimeMessage msg = (MimeMessage)message[i] ;
+                mailInfo.setSubject(getSubject(msg));
+                mailInfo.setFrom(getFrom(msg));
+                StringBuffer content = new StringBuffer(30);
+                getMailTextContent(msg, content);
+                String contents = (content.length() > 100 ? content.substring(0,100) + "..." : String.valueOf(content));
+                mailInfo.setContent(contents);
+                mailInfo.setDate(msg.getSentDate());
+                mails.add(mailInfo);
             }
-            socket.close();
-            return mails ;
-        } catch (UnknownHostException e) {
-            throw e;
-        } catch (IOException e) {
-            throw e;
-        } catch (InterruptedException e) {
-            throw e;
-        } catch (ParseException e) {
-            throw e;
+            folder.close();
+            store.close();
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+        }
+        return mails ;
+    }
+    public static void getMailTextContent(Part part, StringBuffer content) throws MessagingException, IOException {
+        boolean isContainTextAttach = part.getContentType().indexOf("name") > 0;
+        if (part.isMimeType("text/*") && !isContainTextAttach) {
+            content.append(part.getContent().toString());
+        } else if (part.isMimeType("message/rfc822")) {
+            getMailTextContent((Part)part.getContent(),content);
+        } else if (part.isMimeType("multipart/*")) {
+            Multipart multipart = (Multipart) part.getContent();
+            int partCount = multipart.getCount();
+            for (int i = 0; i < partCount; i++) {
+                BodyPart bodyPart = multipart.getBodyPart(i);
+                getMailTextContent(bodyPart,content);
+            }
         }
     }
+    public static String getSubject(MimeMessage msg) throws UnsupportedEncodingException, MessagingException {
+        return MimeUtility.decodeText(msg.getSubject());
+    }
+    public static String getFrom(MimeMessage msg) throws MessagingException, UnsupportedEncodingException {
+        String from = "";
+        Address[] froms = msg.getFrom();
+        if (froms.length < 1) {
+            throw new MessagingException("没有发件人!");
+        }
+        InternetAddress address = (InternetAddress) froms[0];
+        String person = address.getPersonal();
+        if (person != null) {
+            person = MimeUtility.decodeText(person) + " ";
+        } else {
+            person = "";
+        }
+        from = person + "<" + address.getAddress() + ">";
 
+        return from;
+    }
 
     public String getReturn(BufferedReader in) {
         String line = null;

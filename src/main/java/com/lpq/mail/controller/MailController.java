@@ -12,6 +12,7 @@ import com.lpq.mail.vo.MailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
@@ -74,6 +75,9 @@ public class MailController {
         } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
         } catch (InterruptedException | ParseException | IOException e) {
+            e.printStackTrace();
+            return BaseResult.fail(CodeMessage.GET_MAIL_ERROR);
+        } catch (MessagingException e) {
             e.printStackTrace();
             return BaseResult.fail(CodeMessage.GET_MAIL_ERROR);
         }

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.beans.Transient;
 import java.io.IOException;
 import java.text.ParseException;
@@ -74,6 +75,7 @@ public class MailServiceImpl implements MailService {
                 success = smtp.SMTPserver(mailInfo, mailAccountInfo.get(0));
             }
         }
+        success = success.substring(0,3);
         if(success.equals("250")){
             mailSendInfoDao.insert(mailInfo);
         }
@@ -82,7 +84,7 @@ public class MailServiceImpl implements MailService {
 
     @Override
     @Transactional
-    public boolean receiveMail(Integer userId) throws GlobalException, InterruptedException, ParseException, IOException {
+    public boolean receiveMail(Integer userId) throws GlobalException, InterruptedException, ParseException, IOException, MessagingException {
         //先删后存，防止数据库里面邮件重复
         MailInfoExample example = new MailInfoExample();
         example.createCriteria().andUserIdEqualTo(userId);
@@ -112,7 +114,7 @@ public class MailServiceImpl implements MailService {
                     if(mails.size()>0){
                         mailInfoDao.insertByList(mails);
                     }
-                } catch (IOException | InterruptedException | ParseException e) {
+                } catch (MessagingException e) {
                     e.printStackTrace();
                     throw e;
                 }

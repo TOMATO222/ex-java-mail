@@ -5,6 +5,7 @@ import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.entity.MailSendInfo;
 import com.lpq.mail.exception.GlobalException;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
@@ -26,7 +27,7 @@ public interface MailService {
      * @author: Wei Yuyang
      * @time: 2020.05.19
      */
-    boolean receiveMail(Integer userId) throws GlobalException, InterruptedException, ParseException, IOException;
+    boolean receiveMail(Integer userId) throws GlobalException, InterruptedException, ParseException, IOException, MessagingException;
 
     List<MailInfo> takeMail(Integer userId) throws GlobalException;
 
