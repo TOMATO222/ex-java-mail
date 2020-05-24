@@ -9,14 +9,13 @@ import com.lpq.mail.service.SystemService;
 import com.lpq.mail.service.UserService;
 import com.lpq.mail.vo.SystemSettingsVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Wei yuyaung
  * @date 2020.05.23 11:49
  */
+@CrossOrigin
 @RestController
 @RequestMapping("system")
 public class SystemSettingController {
@@ -24,18 +23,22 @@ public class SystemSettingController {
     @Autowired
     public SystemSettingController(SystemService systemService) {this.systemService = systemService; }
 
-    @PassToken
     @PostMapping("change")
-    public BaseResult<String> settings(SystemSettingsVO settingsVO){
+    public BaseResult<String> settings(@RequestBody SystemSettingsVO settingsVO){
         try{
             boolean success = systemService.changeSystem(settingsVO);
             if(success){
-                return BaseResult.success("删除成功");
+                return BaseResult.success("修改成功");
             }else{
                 return BaseResult.fail(CodeMessage.DEL_USER_FAILE);
             }
         } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
         }
+    }
+
+    @GetMapping("settings")
+    public BaseResult<SystemSettingsVO> settings(){
+        return BaseResult.success(systemService.getSettings());
     }
 }

@@ -15,4 +15,15 @@ public interface SystemService {
      * 注释：修改系统信息
      **/
     boolean changeSystem(SystemSettingsVO systemSettingsVO) throws GlobalException;
+
+    /**
+     * description: 获取系统参数设置 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.24 19:01 <br>
+     * author: Dominikyang <br>
+     *
+     * @param
+     * @return com.lpq.mail.vo.SystemSettingsVO
+     */
+    SystemSettingsVO getSettings();
 }

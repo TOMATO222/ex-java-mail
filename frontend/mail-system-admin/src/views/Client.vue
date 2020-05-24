@@ -14,6 +14,12 @@
           height="750"
           style="width: 100%">
           <el-table-column
+            prop="state"
+            label="状态"
+            width="150"
+          >
+          </el-table-column>
+          <el-table-column
             prop="id"
             label="用户id"
             width="450">
@@ -26,12 +32,6 @@
           <el-table-column
             prop="nickName"
             label="用户昵称"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="state"
-            label="状态"
-            width="450"
           >
           </el-table-column>
           <el-table-column label="操作" width="200">
