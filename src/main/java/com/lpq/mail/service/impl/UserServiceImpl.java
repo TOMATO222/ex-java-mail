@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.relation.RoleInfo;
 import java.util.List;
 
 /**
@@ -25,6 +24,11 @@ import java.util.List;
  */
 @Service
 public class UserServiceImpl implements UserService {
+
+    //普通用户
+    public static final int ROLE_USER = 0;
+    //管理员
+    public static final int ROLE_ADMIN = 1;
 
     private UserInfoDao userInfoDao;
     private MailAccountInfoDao mailAccountInfoDao;
@@ -98,6 +102,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfo info(Integer userId) {
         return userInfoDao.selectByPrimaryKey(userId);
+    }
+
+    @Override
+    public UserInfo info(String username) throws GlobalException {
+        UserInfoExample example = new UserInfoExample();
+        example.createCriteria().andUsernameEqualTo(username);
+        List<UserInfo> userInfos = userInfoDao.selectByExample(example);
+        if(userInfos.size() != 1){
+            throw new GlobalException(new CodeMessage(500,"查询用户错误"));
+        }
+
+        return userInfos.get(0);
     }
 
     public String getToken(UserInfo user) {
@@ -198,5 +214,24 @@ public class UserServiceImpl implements UserService {
         int i = mailAccountInfoDao.deleteByExample(mailAccountInfoExample);
         int i1 = userInfoDao.deleteByPrimaryKey(userId);
         return true;
+    }
+
+    @Override
+    public boolean changeRole(Integer userId) throws GlobalException {
+        UserRoleInfoExample userRoleInfoExample = new UserRoleInfoExample();
+        userRoleInfoExample.createCriteria().andUserIdEqualTo(userId);
+        List<UserRoleInfo> userRoleInfos = userRoleInfoDao.selectByExample(userRoleInfoExample);
+        if(userRoleInfos.size() != 1){
+            throw new GlobalException(new CodeMessage(500,"用户不存在"));
+        }
+        userRoleInfoExample.clear();
+        if(userRoleInfos.get(0).getUserType() == ROLE_USER){
+            userRoleInfos.get(0).setUserType(ROLE_ADMIN);
+        }else if(userRoleInfos.get(0).getUserType() == ROLE_ADMIN) {
+            userRoleInfos.get(0).setUserType(ROLE_USER);
+        }
+
+        int i = userRoleInfoDao.updateByPrimaryKey(userRoleInfos.get(0));
+        return i > 0;
     }
 }

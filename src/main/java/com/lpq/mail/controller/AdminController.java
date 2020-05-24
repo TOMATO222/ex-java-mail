@@ -1,8 +1,6 @@
 package com.lpq.mail.controller;
 
-import com.auth0.jwt.JWT;
 import com.lpq.mail.annotations.PassToken;
-import com.lpq.mail.annotations.UserLoginToken;
 import com.lpq.mail.dto.LoginDTO;
 import com.lpq.mail.entity.MailSendInfo;
 import com.lpq.mail.entity.UserInfo;
@@ -11,9 +9,7 @@ import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.ManagerService;
 import com.lpq.mail.service.UserService;
-import com.lpq.mail.vo.ChangeStateVO;
-import com.lpq.mail.vo.DeleteUserVO;
-import com.lpq.mail.vo.LoginVO;
+import com.lpq.mail.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -130,4 +126,54 @@ public class AdminController {
             return BaseResult.fail(CodeMessage.DEL_USER_FAILE);
         }
     }
+
+    /**
+     * description: 管理员注册 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 1:35 <br>
+     * author: Dominikyang <br>
+     *
+     * @param registerVO
+     * @return com.lpq.mail.result.BaseResult<java.lang.String>
+     */
+    @PostMapping("register")
+    public BaseResult<String> register(@RequestBody RegisterVO registerVO){
+        boolean b = false;
+        try {
+            b = userService.addUser(registerVO);
+            if(b){
+                UserInfo info = userService.info(registerVO.getUsername());
+                boolean role = userService.changeRole(info.getId());
+                if(role){
+                    return BaseResult.success("创建用户成功");
+                }else {
+                    return BaseResult.fail(new CodeMessage(500,"新增用户失败"));
+                }
+            }else {
+                return BaseResult.fail(new CodeMessage(500,"新增用户失败"));
+            }
+        } catch (GlobalException e) {
+            e.printStackTrace();
+            return BaseResult.fail(e.getCodeMessage());
+        }
+    }
+
+
+    @PostMapping("change/password")
+    public BaseResult<String> changePassword(@RequestBody AdminChangePwdVO adminChangePwdVO){
+        try {
+            boolean b = userService.changePassword(adminChangePwdVO.getUserId(), new ChangePasswordVO(adminChangePwdVO.getOldPassword(), adminChangePwdVO.getNewPassword()));
+            if(b){
+                return BaseResult.success("修改成功");
+            }else {
+                return BaseResult.fail(new CodeMessage(500,"修改失败"));
+            }
+        } catch (GlobalException e) {
+            e.printStackTrace();
+            return BaseResult.fail(e.getCodeMessage());
+        }
+
+
+    }
+
 }

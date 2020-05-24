@@ -57,6 +57,18 @@ public interface UserService {
 
 
     /**
+     * description: 根据账号查询用户信息 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 1:48 <br>
+     * author: Dominikyang <br>
+     *
+     * @param username
+     * @return com.lpq.mail.entity.UserInfo
+     */
+    UserInfo info(String username) throws GlobalException;
+
+
+    /**
      * description: mailInfo <br>
      * version: 1.0 <br>
      * date: 2020.05.21 14:35 <br>
@@ -100,4 +112,15 @@ public interface UserService {
      * @return boolean
      */ 
     boolean deleteUser(Integer userId);
+
+    /**
+     * description: 修改用户角色 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 1:24 <br>
+     * author: Dominikyang <br>
+     *
+     * @param userId
+     * @return boolean
+     */
+    boolean changeRole(Integer userId) throws GlobalException;
 }
