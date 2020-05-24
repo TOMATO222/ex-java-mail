@@ -52,7 +52,7 @@ public class POPUtil {
                     mails.add(mailInfo);
                 }
             }
-            while(!line.equals("..."));
+            while(!"...".equals(line));
             socket.close();
             return mails;
         } catch (UnknownHostException e) {
@@ -68,7 +68,7 @@ public class POPUtil {
     }
 
     public List<MailInfo> POPServer(MailAccountInfo mailAccountInfo) throws IOException, InterruptedException, ParseException {
-        List<MailInfo> mails = new ArrayList<MailInfo>();
+        List<MailInfo> mails = new ArrayList<>();
         int port = Integer.valueOf(mailAccountInfo.getMailPopPort());
         String server = mailAccountInfo.getMailPopAddress();
         Socket socket = null ;
@@ -217,15 +217,14 @@ public class POPUtil {
         String message = "";
         String line = null;
         try{
-            line=in.readLine().toString();
+            line= in.readLine();
             while(!".".equalsIgnoreCase(line)){
                 message=message+line+"\n";
-                line=in.readLine().toString();
+                line= in.readLine();
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-        Thread.sleep(3000);
         return message;
     }
     public void quit(BufferedReader in,BufferedWriter out) throws IOException{

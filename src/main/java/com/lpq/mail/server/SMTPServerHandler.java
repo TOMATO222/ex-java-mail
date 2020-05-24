@@ -33,7 +33,7 @@ public class SMTPServerHandler implements Runnable {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out =  new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         factory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"));
-        sqlSession = factory.openSession();
+        sqlSession = factory.openSession(true);
         this.mailInfoDao = sqlSession.getMapper(LocalMailInfoDao.class);
     }
     @SneakyThrows
@@ -49,7 +49,6 @@ public class SMTPServerHandler implements Runnable {
             mailInfo.setDate(new Date());
             int userId = Integer.parseInt(userID);
             mailInfo.setUserId(userId);
-            System.out.println(mailInfo.toString());
             mailInfoDao.insert(mailInfo);
             sendMessage("250 发送成功" , out);
         } catch (IOException e) {
