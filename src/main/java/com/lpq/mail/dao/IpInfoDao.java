@@ -27,4 +27,6 @@ public interface IpInfoDao {
     int updateByPrimaryKeySelective(IpInfo record);
 
     int updateByPrimaryKey(IpInfo record);
+
+    int insertInfo(IpInfo record);
 }

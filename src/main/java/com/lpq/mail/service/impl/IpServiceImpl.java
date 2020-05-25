@@ -30,7 +30,7 @@ public class IpServiceImpl implements IpService {
         IpInfo ipInfo1 = ipInfoDao.selectByPrimaryKey(ipInfo.getIp());
         if(ipInfo1 == null){
             ipInfo.setUpdateTime(new Date());
-            int insert = ipInfoDao.insert(ipInfo);
+            int insert = ipInfoDao.insertInfo(ipInfo);
             return insert > 0;
         }else {
             throw  new GlobalException(new CodeMessage(500,"当前ip已存在"));

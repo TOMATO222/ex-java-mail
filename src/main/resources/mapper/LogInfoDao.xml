@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lpq.mail.dao.IpInfoDao">
-  <resultMap id="BaseResultMap" type="com.lpq.mail.entity.IpInfo">
-    <id column="ip" jdbcType="VARCHAR" property="ip" />
-    <result column="type" jdbcType="INTEGER" property="type" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+<mapper namespace="com.lpq.mail.dao.LogInfoDao">
+  <resultMap id="BaseResultMap" type="com.lpq.mail.entity.LogInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="operation_name" jdbcType="VARCHAR" property="operationName" />
+    <result column="method" jdbcType="VARCHAR" property="method" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -65,15 +66,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    ip, `type`, update_time
+    id, operation_name, `method`, `date`
   </sql>
-  <select id="selectByExample" parameterType="com.lpq.mail.entity.IpInfoExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.lpq.mail.entity.LogInfoExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from ip_info
+    from log_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -81,62 +82,73 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from ip_info
-    where ip = #{ip,jdbcType=VARCHAR}
+    from log_info
+    where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from ip_info
-    where ip = #{ip,jdbcType=VARCHAR}
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from log_info
+    where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.lpq.mail.entity.IpInfoExample">
-    delete from ip_info
+  <delete id="deleteByExample" parameterType="com.lpq.mail.entity.LogInfoExample">
+    delete from log_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" keyColumn="ip" keyProperty="ip" parameterType="com.lpq.mail.entity.IpInfo" useGeneratedKeys="true">
-    insert into ip_info (`type`, update_time)
-    values (#{type,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lpq.mail.entity.LogInfo" useGeneratedKeys="true">
+    insert into log_info (operation_name, `method`, `date`
+      )
+    values (#{operationName,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP}
+      )
   </insert>
-  <insert id="insertSelective" keyColumn="ip" keyProperty="ip" parameterType="com.lpq.mail.entity.IpInfo" useGeneratedKeys="true">
-    insert into ip_info
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lpq.mail.entity.LogInfo" useGeneratedKeys="true">
+    insert into log_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="type != null">
-        `type`,
+      <if test="operationName != null">
+        operation_name,
       </if>
-      <if test="updateTime != null">
-        update_time,
+      <if test="method != null">
+        `method`,
+      </if>
+      <if test="date != null">
+        `date`,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="type != null">
-        #{type,jdbcType=INTEGER},
+      <if test="operationName != null">
+        #{operationName,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
+      <if test="method != null">
+        #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.lpq.mail.entity.IpInfoExample" resultType="java.lang.Long">
-    select count(*) from ip_info
+  <select id="countByExample" parameterType="com.lpq.mail.entity.LogInfoExample" resultType="java.lang.Long">
+    select count(*) from log_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update ip_info
+    update log_info
     <set>
-      <if test="record.ip != null">
-        ip = #{record.ip,jdbcType=VARCHAR},
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.type != null">
-        `type` = #{record.type,jdbcType=INTEGER},
+      <if test="record.operationName != null">
+        operation_name = #{record.operationName,jdbcType=VARCHAR},
       </if>
-      <if test="record.updateTime != null">
-        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      <if test="record.method != null">
+        `method` = #{record.method,jdbcType=VARCHAR},
+      </if>
+      <if test="record.date != null">
+        `date` = #{record.date,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -144,35 +156,35 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update ip_info
-    set ip = #{record.ip,jdbcType=VARCHAR},
-      `type` = #{record.type,jdbcType=INTEGER},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    update log_info
+    set id = #{record.id,jdbcType=INTEGER},
+      operation_name = #{record.operationName,jdbcType=VARCHAR},
+      `method` = #{record.method,jdbcType=VARCHAR},
+      `date` = #{record.date,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.lpq.mail.entity.IpInfo">
-    update ip_info
+  <update id="updateByPrimaryKeySelective" parameterType="com.lpq.mail.entity.LogInfo">
+    update log_info
     <set>
-      <if test="type != null">
-        `type` = #{type,jdbcType=INTEGER},
+      <if test="operationName != null">
+        operation_name = #{operationName,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      <if test="method != null">
+        `method` = #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        `date` = #{date,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where ip = #{ip,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.lpq.mail.entity.IpInfo">
-    update ip_info
-    set `type` = #{type,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where ip = #{ip,jdbcType=VARCHAR}
+  <update id="updateByPrimaryKey" parameterType="com.lpq.mail.entity.LogInfo">
+    update log_info
+    set operation_name = #{operationName,jdbcType=VARCHAR},
+      `method` = #{method,jdbcType=VARCHAR},
+      `date` = #{date,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
   </update>
-
-  <insert id="insertInfo" keyColumn="ip" keyProperty="ip" parameterType="com.lpq.mail.entity.IpInfo" >
-    insert into ip_info (`ip`,`type`, update_time)
-    values (#{ip,jdbcType=VARCHAR},#{type,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
-  </insert>
 </mapper>
