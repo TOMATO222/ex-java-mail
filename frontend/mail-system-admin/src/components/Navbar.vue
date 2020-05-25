@@ -19,6 +19,7 @@
                     {name:'/system',navItem:'系统参数设置'},
                     {name:'/ip',navItem:'ip过滤控制'},
                     {name:'/password',navItem:'管理员修改密码'},
+                    {name:'/log',navItem:'日志管理'},
                 ]
             };
         },

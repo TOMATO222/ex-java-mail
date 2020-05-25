@@ -8,6 +8,7 @@ import System from '@/views/System'
 import Server from '@/views/Server'
 import Ip from '@/views/Ip'
 import Password from '@/views/Password'
+import Log from '@/views/Log'
 
 Vue.use(VueRouter);
 
@@ -47,6 +48,11 @@ export default new VueRouter({
       name:'Password',
       path:'/Password',
       component: Password
+    },
+    {
+      name:'Log',
+      path:'/Log',
+      component: Log
     },
   ]
 })

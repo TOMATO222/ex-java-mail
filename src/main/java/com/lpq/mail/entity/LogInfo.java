@@ -40,5 +40,6 @@ public class LogInfo implements Serializable {
     public LogInfo(String operationName, String method) {
         this.operationName = operationName;
         this.method = method;
+        this.date = new Date();
     }
 }
