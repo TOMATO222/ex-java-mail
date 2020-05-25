@@ -44,7 +44,7 @@ public class ManagerServiceImpl implements ManagerService {
             throw new GlobalException(CodeMessage.ERROR_USERNAME);
         }
         ManagerInfo managerInfo = userInfoDao.selectManager(userInfos.get(0).getUsername());
-        if (managerInfo.getUser_id() == null) {
+        if (managerInfo == null || managerInfo.getRole_id() < 1) {
             throw new GlobalException(CodeMessage.NOT_MANAGER);
         }
         if (userInfos.get(0).getPassword().equals(loginVO.getPassword())) {

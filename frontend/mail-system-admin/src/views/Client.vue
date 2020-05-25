@@ -42,7 +42,7 @@
                 label="用户昵称"
               >
               </el-table-column>
-              <el-table-column label="操作" width="400">
+              <el-table-column label="操作" width="300">
                 <template slot-scope="scope">
                   <el-button
                     size="mini"
@@ -52,11 +52,6 @@
                     size="mini"
                     type="primary"
                     @click="openEditForm(scope.$index, scope.row)">编辑
-                  </el-button>
-                  <el-button
-                    size="mini"
-                    type="primary"
-                    @click="changeRole(scope.$index, scope.row)">授权/撤销
                   </el-button>
                   <el-button
                     size="mini"
@@ -83,7 +78,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogAddgsVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveAddForm()">确 定</el-button>
+        <el-button type="primary" @click="saveAddForm">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -93,11 +88,17 @@
         <el-form-item label="昵称">
           <el-input v-model="editForm.nickName"></el-input>
         </el-form-item>
-      </el-form>
+        <el-form-item label="角色">
+          <el-radio-group v-model="editForm.roleType">
+            <el-radio :label="0">普通用户</el-radio>
+            <el-radio :label="1">管理员</el-radio>
+          </el-radio-group>
+        </el-form-item>
 
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogAddgsVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveAddForm()">确 定</el-button>
+        <el-button type="primary" @click="saveEditForm()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -133,7 +134,9 @@
                 dialogAddgsVisible: false,
                 dialogEditVisible: false,
                 editForm: {
-                    nickName: ''
+                    nickName: '',
+                    id: '',
+                    roleType: ''
                 }
             }
         },
@@ -208,25 +211,99 @@
             },
             closeAddForm() {
                 this.$refs.addForm.resetFields();//element封装的方法,清空模态框的值
-                this.title = '',
-                    this.addForm = {
-                        username: '',
-                        password: '',
-                    }
+                this.title = '';
+                this.addForm = {
+                    username: '',
+                    password: '',
+                }
             },
-            openEditForm(index,row) {
+            openEditForm(index, row) {
+                console.log(Global.token);
                 this.dialogEditVisible = true;
                 this.title = "编辑用户信息";
-                this.editForm.nickName = row.nickName
+                this.editForm.nickName = row.nickName;
+                this.editForm.id = row.id;
+                this.axios({
+                    method: 'post',
+                    url: Global.httpUrl + 'admin/info/role',
+                    data: JSON.stringify({
+                        userId: this.editForm.id,
+                    }),
+                    headers: {'Content-Type': 'application/json'}
+                }).then(response =>{
+                    if (response.data.code === 200) {
+                        this.editForm.roleType = response.data.data;
+                    } else {
+                        this.$notify.error({
+                            title: '失败',
+                            message: response.data.message,
+                        });
+                        this.editForm.roleType = 0
+                    }
+                })
             },
             closeEditForm() {
                 this.$refs.addForm.resetFields();//element封装的方法,清空模态框的值
-                this.title = '',
-                    this.editForm = {
-                        nickName: '',
-                    }
+                this.title = '';
+                this.editForm = {
+                    nickName: '',
+                }
             },
-
+            saveAddForm() {
+                this.axios({
+                    method: 'post',
+                    url: Global.httpUrl + 'admin/register',
+                    data: JSON.stringify({
+                        username: this.addForm.username,
+                        password: this.addForm.password
+                    }),
+                    headers: {'Content-Type': 'application/json'}
+                }).then(response => {
+                    if (response.data.code === 200) {
+                        this.$notify({
+                            title: '成功',
+                            message: response.data.data,
+                            type: 'success'
+                        });
+                        this.dialogAddgsVisible = false;
+                        this.closeAddForm();
+                        this.initData();
+                    } else {
+                        this.$notify.error({
+                            title: '失败',
+                            message: response.data.message,
+                        });
+                    }
+                })
+            },
+            saveEditForm() {
+                this.axios({
+                    method: 'post',
+                    url: Global.httpUrl + 'admin/userManage/info',
+                    data: JSON.stringify({
+                        userId: this.editForm.id,
+                        nickName: this.editForm.nickName,
+                        roleType: this.editForm.roleType
+                    }),
+                    headers: {'Content-Type': 'application/json'}
+                }).then(response => {
+                    if (response.data.code === 200) {
+                        this.$notify({
+                            title: '成功',
+                            message: response.data.data,
+                            type: 'success'
+                        });
+                        this.dialogEditVisible = false;
+                        this.closeEditForm();
+                        this.initData();
+                    } else {
+                        this.$notify.error({
+                            title: '失败',
+                            message: response.data.message,
+                        });
+                    }
+                })
+            },
         }
     }
 </script>

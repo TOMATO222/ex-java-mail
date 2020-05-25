@@ -33,6 +33,7 @@
 <script>
     import Header from "../components/Header";
     import Navbar from "../components/Navbar";
+    import Global from "../components/Global";
     export default {
         name: "Password",
         components: {Navbar, Header},
@@ -44,6 +45,37 @@
                 }
             }
         },
+        methods :{
+            onSubmit(){
+                this.axios({
+                    method: 'post',
+                    url: Global.httpUrl + 'admin/userManage/password',
+                    data: JSON.stringify({
+                        oldPassword: this.form.oldPassword,
+                        newPassword: this.form.newPassword
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': Global.token
+                    }
+                }).then(response => {
+                    console.log(Global.token);
+                    if (response.data.code === 200) {
+                        this.$notify({
+                            title: '成功',
+                            message: response.data.data,
+                            type: 'success'
+                        });
+                        this.initData();
+                    } else {
+                        this.$notify.error({
+                            title: '失败',
+                            message: response.data.message,
+                        });
+                    }
+                })
+            }
+        }
     }
 </script>
 

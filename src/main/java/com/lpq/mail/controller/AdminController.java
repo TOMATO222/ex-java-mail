@@ -1,5 +1,6 @@
 package com.lpq.mail.controller;
 
+import com.auth0.jwt.JWT;
 import com.lpq.mail.annotations.PassToken;
 import com.lpq.mail.dto.LoginDTO;
 import com.lpq.mail.entity.IpInfo;
@@ -167,10 +168,20 @@ public class AdminController {
     }
 
 
+    /**
+     * description: 管理员修改密码 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 13:24 <br>
+     * author: Dominikyang <br>
+     *
+     * @param adminChangePwdVO
+     * @return com.lpq.mail.result.BaseResult<java.lang.String>
+     */
     @PostMapping("userManage/password")
-    public BaseResult<String> changePassword(@RequestBody AdminChangePwdVO adminChangePwdVO){
+    public BaseResult<String> changePassword(@RequestBody AdminChangePwdVO adminChangePwdVO,HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
         try {
-            boolean b = userService.changePassword(adminChangePwdVO.getUserId(), new ChangePasswordVO(adminChangePwdVO.getOldPassword(), adminChangePwdVO.getNewPassword()));
+            boolean b = userService.changePassword(Integer.valueOf(JWT.decode(token).getAudience().get(0)), new ChangePasswordVO(adminChangePwdVO.getOldPassword(), adminChangePwdVO.getNewPassword()));
             if(b){
                 return BaseResult.success("修改成功");
             }else {
@@ -188,12 +199,12 @@ public class AdminController {
      * date: 2020.05.25 2:04 <br>
      * author: Dominikyang <br>
      * 
-     * @param userInfo
+     * @param adminModifyInfo
      * @return com.lpq.mail.result.BaseResult<java.lang.String>
      */ 
     @PostMapping("userManage/info")
-    public BaseResult<String> modifyInfos(@RequestBody UserInfo userInfo){
-        boolean b = userService.modifyUserMessage(userInfo);
+    public BaseResult<String> modifyInfos(@RequestBody AdminModifyInfo adminModifyInfo){
+        boolean b = userService.modifyUserMessage(adminModifyInfo);
         if(b){
             return BaseResult.success("修改成功");
         }else {
@@ -231,6 +242,15 @@ public class AdminController {
         }
     }
 
+    /**
+     * description: 删除ip <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 12:25 <br>
+     * author: Dominikyang <br>
+     *
+     * @param ipInfo
+     * @return com.lpq.mail.result.BaseResult<java.lang.String>
+     */
     @PostMapping("ip/del")
     public BaseResult<String> ipDel(@RequestBody IpInfo ipInfo){
         boolean delete = ipService.delete(ipInfo);
@@ -238,6 +258,17 @@ public class AdminController {
             return BaseResult.success("删除规则成功");
         }else {
             return BaseResult.fail(new CodeMessage(500,"删除规则失败"));
+        }
+    }
+
+    @PostMapping("info/role")
+    public BaseResult<Integer> userRoleInfo(@RequestBody AdminRoleInfo adminRoleInfo){
+        try {
+            Integer userRoleInfo = userService.getUserRoleInfo(adminRoleInfo.getUserId());
+            return BaseResult.success(userRoleInfo);
+        } catch (GlobalException e) {
+            e.printStackTrace();
+            return BaseResult.fail(e.getCodeMessage());
         }
     }
 }

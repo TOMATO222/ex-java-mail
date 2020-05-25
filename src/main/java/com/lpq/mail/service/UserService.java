@@ -3,6 +3,7 @@ package com.lpq.mail.service;
 import com.lpq.mail.entity.MailAccountInfo;
 import com.lpq.mail.entity.MailInfo;
 import com.lpq.mail.entity.UserInfo;
+import com.lpq.mail.entity.UserRoleInfo;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.vo.*;
 
@@ -130,8 +131,19 @@ public interface UserService {
      * date: 2020.05.25 1:59 <br>
      * author: Dominikyang <br>
      *
-     * @param userInfo
+     * @param adminModifyInfo 修改的信息
      * @return boolean
      */
-    boolean modifyUserMessage(UserInfo userInfo);
+    boolean modifyUserMessage(AdminModifyInfo adminModifyInfo);
+
+    /**
+     * description: getUserRoleInfo <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 12:32 <br>
+     * author: Dominikyang <br>
+     *
+     * @param userId 用户id
+     * @return java.lang.Integer
+     */
+    Integer getUserRoleInfo(Integer userId) throws GlobalException;
 }

@@ -236,7 +236,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean modifyUserMessage(UserInfo userInfo) {
-        return userInfoDao.updateByPrimaryKeySelective(userInfo) > 0;
+    public boolean modifyUserMessage(AdminModifyInfo adminModifyInfo) {
+        UserInfo userInfo = userInfoDao.selectByPrimaryKey(adminModifyInfo.getUserId());
+        userInfo.setNickName(adminModifyInfo.getNickName());
+        int i = userInfoDao.updateByPrimaryKey(userInfo);
+
+        UserRoleInfoExample example = new UserRoleInfoExample();
+        example.createCriteria().andUserIdEqualTo(adminModifyInfo.getUserId());
+        List<UserRoleInfo> userRoleInfos = userRoleInfoDao.selectByExample(example);
+        UserRoleInfo userRoleInfo = userRoleInfos.get(0);
+        userRoleInfo.setUserType(adminModifyInfo.getRoleType());
+        int i1 = userRoleInfoDao.updateByPrimaryKey(userRoleInfo);
+        return i > 0 && i1 > 0;
+    }
+
+    @Override
+    public Integer getUserRoleInfo(Integer userId) throws GlobalException {
+        UserRoleInfoExample example = new UserRoleInfoExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        List<UserRoleInfo> userRoleInfos = userRoleInfoDao.selectByExample(example);
+        if(userRoleInfos.size() != 1){
+            throw new GlobalException(new CodeMessage(500,"数据库错误"));
+        }
+        return userRoleInfos.get(0).getUserType();
     }
 }

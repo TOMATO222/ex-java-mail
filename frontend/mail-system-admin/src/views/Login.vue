@@ -62,9 +62,17 @@
 <style scoped>
   .parent-box{
     margin: 0 auto;
-    width: 800px;
+    width: 700px;
     height: 300px;
-    top: 800px;
+  }
+
+  .el-form{
+    position: relative;
+    margin-top: 10%;
+  }
+
+  .el-card{
+    height: 400px;
   }
 
   .el-button {
