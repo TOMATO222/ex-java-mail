@@ -4,12 +4,14 @@ import com.auth0.jwt.JWT;
 import com.lpq.mail.annotations.PassToken;
 import com.lpq.mail.dto.LoginDTO;
 import com.lpq.mail.entity.IpInfo;
+import com.lpq.mail.entity.LogInfo;
 import com.lpq.mail.entity.MailSendInfo;
 import com.lpq.mail.entity.UserInfo;
 import com.lpq.mail.exception.GlobalException;
 import com.lpq.mail.result.BaseResult;
 import com.lpq.mail.result.CodeMessage;
 import com.lpq.mail.service.IpService;
+import com.lpq.mail.service.LogService;
 import com.lpq.mail.service.ManagerService;
 import com.lpq.mail.service.UserService;
 import com.lpq.mail.vo.*;
@@ -30,13 +32,15 @@ public class AdminController {
     private ManagerService managerService ;
     private UserService userService;
     private IpService ipService;
+    private LogService logService;
 
 
     @Autowired
-    public AdminController(ManagerService managerService, UserService userService, IpService ipService) {
+    public AdminController(ManagerService managerService, UserService userService, IpService ipService, LogService logService) {
         this.managerService = managerService;
         this.userService = userService;
         this.ipService = ipService;
+        this.logService = logService;
     }
 
     /**
@@ -51,6 +55,7 @@ public class AdminController {
     @PassToken
     @PostMapping("login")
     public BaseResult<LoginDTO> login(@RequestBody LoginVO loginVO){
+        logService.insert(new LogInfo("管理员登录",Thread.currentThread().getStackTrace()[1].getMethodName()));
         try {
             String login = managerService.login(loginVO);
             return BaseResult.success(new LoginDTO(login));
@@ -90,6 +95,7 @@ public class AdminController {
      */ 
     @PostMapping("userManage/changeState")
     public BaseResult<String> changeUserState(@RequestBody ChangeStateVO changeStateVO, HttpServletRequest httpServletRequest){
+        logService.insert(new LogInfo("管理员加锁/解锁用户",Thread.currentThread().getStackTrace()[1].getMethodName()));
         try{
             boolean success = managerService.changeState(changeStateVO.getUserId());
             if(success){
@@ -113,6 +119,7 @@ public class AdminController {
      */ 
     @GetMapping("mailManage/list")
     public BaseResult<List<MailSendInfo>> viewMailList(){
+        logService.insert(new LogInfo("查看发件箱",Thread.currentThread().getStackTrace()[1].getMethodName()));
         List<MailSendInfo> mails = managerService.loadAllMail() ;
         return BaseResult.success(mails);
     }
@@ -128,6 +135,7 @@ public class AdminController {
      */ 
     @PostMapping("userManage/del")
     public BaseResult<String> deleteUser(@RequestBody DeleteUserVO deleteUserVO){
+        logService.insert(new LogInfo("管理员删除用户",Thread.currentThread().getStackTrace()[1].getMethodName()));
         boolean b = userService.deleteUser(deleteUserVO.getUserId());
         if(b){
             return BaseResult.success("删除成功");
@@ -147,6 +155,7 @@ public class AdminController {
      */
     @PostMapping("register")
     public BaseResult<String> register(@RequestBody RegisterVO registerVO){
+        logService.insert(new LogInfo("注册新管理员",Thread.currentThread().getStackTrace()[1].getMethodName()));
         boolean b = false;
         try {
             b = userService.addUser(registerVO);
@@ -179,6 +188,7 @@ public class AdminController {
      */
     @PostMapping("userManage/password")
     public BaseResult<String> changePassword(@RequestBody AdminChangePwdVO adminChangePwdVO,HttpServletRequest httpServletRequest){
+        logService.insert(new LogInfo("管理员修改密码",Thread.currentThread().getStackTrace()[1].getMethodName()));
         String token = httpServletRequest.getHeader("token");
         try {
             boolean b = userService.changePassword(Integer.valueOf(JWT.decode(token).getAudience().get(0)), new ChangePasswordVO(adminChangePwdVO.getOldPassword(), adminChangePwdVO.getNewPassword()));
@@ -204,6 +214,7 @@ public class AdminController {
      */ 
     @PostMapping("userManage/info")
     public BaseResult<String> modifyInfos(@RequestBody AdminModifyInfo adminModifyInfo){
+        logService.insert(new LogInfo("管理员修改用户信息",Thread.currentThread().getStackTrace()[1].getMethodName()));
         boolean b = userService.modifyUserMessage(adminModifyInfo);
         if(b){
             return BaseResult.success("修改成功");
@@ -223,12 +234,14 @@ public class AdminController {
      */
     @GetMapping("ip/list")
     public BaseResult<List<IpInfo>> ipInfoList(){
+        logService.insert(new LogInfo("查看ip信息",Thread.currentThread().getStackTrace()[1].getMethodName()));
         List<IpInfo> select = ipService.select();
         return BaseResult.success(select);
     }
 
     @PostMapping("ip/add")
     public BaseResult<String> ipAdd(@RequestBody IpInfo ipInfo){
+        logService.insert(new LogInfo("添加新的规则",Thread.currentThread().getStackTrace()[1].getMethodName()));
         try {
             boolean add = ipService.add(ipInfo);
             if(add){
@@ -253,6 +266,7 @@ public class AdminController {
      */
     @PostMapping("ip/del")
     public BaseResult<String> ipDel(@RequestBody IpInfo ipInfo){
+        logService.insert(new LogInfo("删除ip规则",Thread.currentThread().getStackTrace()[1].getMethodName()));
         boolean delete = ipService.delete(ipInfo);
         if(delete){
             return BaseResult.success("删除规则成功");
@@ -261,6 +275,15 @@ public class AdminController {
         }
     }
 
+    /**
+     * description: 获取用户的角色信息 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 15:24 <br>
+     * author: Dominikyang <br>
+     *
+     * @param adminRoleInfo
+     * @return com.lpq.mail.result.BaseResult<java.lang.Integer>
+     */
     @PostMapping("info/role")
     public BaseResult<Integer> userRoleInfo(@RequestBody AdminRoleInfo adminRoleInfo){
         try {
@@ -270,5 +293,20 @@ public class AdminController {
             e.printStackTrace();
             return BaseResult.fail(e.getCodeMessage());
         }
+    }
+
+    /**
+     * description: 获取操作日志列表 <br>
+     * version: 1.0 <br>
+     * date: 2020.05.25 15:24 <br>
+     * author: Dominikyang <br>
+     *
+     * @param
+     * @return com.lpq.mail.result.BaseResult<java.util.List<com.lpq.mail.entity.LogInfo>>
+     */
+    @GetMapping("log/list")
+    public BaseResult<List<LogInfo>> listLogInfo(){
+        logService.insert(new LogInfo("查看操作日志",Thread.currentThread().getStackTrace()[1].getMethodName()));
+        return BaseResult.success(logService.select());
     }
 }
